@@ -12,7 +12,7 @@ Currently stage of development: developing gameplay mechanics on C++
 
 ## Will be integrated:
 - multiplayer
-- singleplayer compain
+- singleplayer campain
 - abuility to host your own game in configured network
 - complex animations
 
