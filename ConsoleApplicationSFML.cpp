@@ -63,7 +63,12 @@ int main()
     }
     //sf::Sprite shipImageSprite;
     
-    
+    // loading font for text
+    sf::Font font;
+    if (!font.loadFromFile("fonts/ARIAL.TTF")) {
+        std::cerr << "Failed to load font Arial!" << std::endl;
+        return -1;
+    }
 
 
     //shaderStar.setUniform("fadeFactor", 0.5f); // Adjust fade sharpness
@@ -131,6 +136,22 @@ int main()
 
     sf::Clock clock; // from here impolimenting object movement
 
+    sf::Clock game_time;
+
+    sf::Text time_text;
+    time_text.setFont(font);
+    
+    time_text.setString("No data");
+    time_text.setFillColor(sf::Color::White);
+    std::string timeString;
+    std::string time_in_seconds;
+    int time_minutes = 0;
+    int time_hours = 0;
+    float time_days;
+    float time_weeks;
+    float time_months;
+    float time_years;
+
     //sf::CircleShape sprite(10.f);
     //sprite.setFillColor(sf::Color::Green);
     //sprite.setPosition(100.f, 100.f); // Starting position
@@ -151,6 +172,41 @@ int main()
     // Главный цикл программы
     while (window.isOpen())
     {
+        // move it to another class ============================================================
+        //time_text.setPosition(view.getCenter().x / 2, view.getCenter().y / 2); 
+        sf::Vector2f curCenter = view.getCenter();
+        sf::Vector2u curPosCenter = window.getSize();
+        sf::Vector2f viewSize = view.getSize();
+        //sf::Vector2f viewOffset = sf::Vector2f(curCenter.x - curPosCenter.x / 2 , curCenter.y - curPosCenter.y / 2);
+        sf::Vector2f viewOffset = sf::Vector2f(curCenter - viewSize / 2.0f);
+        time_text.setPosition(viewOffset);
+        // I need to create function, that posistiones to left up corner
+        float time_seconds = game_time.getElapsedTime().asSeconds(); // if i want it run faster just increase it like that * x
+        if (time_seconds >= 60.0f) {
+            game_time.restart();
+            time_minutes += 1;
+            time_seconds = 0;
+        }
+        if (time_minutes >= 60.0f) {
+            time_minutes = 0;
+            time_hours += 1;
+        }
+        if (time_seconds < 10) {
+            time_in_seconds = "0" + std::to_string(time_seconds);
+        }
+        else {
+            time_in_seconds = std::to_string(time_seconds); 
+        }
+        time_in_seconds = time_in_seconds.substr(0, 5);
+        timeString = std::to_string(time_hours) + ":" + std::to_string(time_minutes) + ":" + time_in_seconds;
+
+        time_text.setString(timeString); // I want clock that are not reset
+        
+        // clock LOGIC -> transfer to another class
+        // move it to another class ===============================================================================
+
+
+
         // Обработка событий
         sf::Event event;
         while (window.pollEvent(event))
@@ -493,7 +549,7 @@ int main()
 
         //std::cout << "Second star x, y";
 
-
+        mapGameObject.printSectors();
         
         mapGameObject.Display(window, shaderStar, zoomFactor);
 
@@ -531,6 +587,7 @@ int main()
             mapGameObject.allShips[i]->Display(window);
         }
 
+        window.draw(time_text);
 
         // Отображение окна на экране
         window.display();   

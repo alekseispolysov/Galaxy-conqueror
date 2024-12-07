@@ -6,6 +6,24 @@
 #include <variant>
 #include <algorithm>
 
+
+
+Sector::Sector(int sectorSize, sf::Vector2f position):sector_size(sectorSize),position(position)
+{
+}
+
+Sector::~Sector()
+{
+}
+
+std::vector<VariantType> Sector::checkColisionInSector()
+{
+	return std::vector<VariantType>();
+}
+
+
+
+
 Map::Map(sf::Vector2f mapSize):mapSize(mapSize){
 	
 	mapSize = mapSize;
@@ -17,6 +35,24 @@ Map::Map(sf::Vector2f mapSize):mapSize(mapSize){
 	mapBorder[5] = sf::Vertex(sf::Vector2f(0, mapSize.y), sf::Color::White); 
 	mapBorder[6] = sf::Vertex(sf::Vector2f(0, mapSize.y), sf::Color::White);
 	mapBorder[7] = sf::Vertex(sf::Vector2f(0, 0), sf::Color::White); 
+
+	// populate 2 dimensional vector
+	float sectorVectorSizeX = mapSize.x / sectorSize; //8
+	float sectorVectorSizeY = mapSize.y / sectorSize; //6
+
+	allSectors.resize(sectorVectorSizeX);
+
+	for (size_t i = 0; i < sectorVectorSizeX; ++i)
+	{
+		allSectors[i].resize(sectorVectorSizeY);
+		for (size_t j = 0; j < sectorVectorSizeY; ++j) {
+
+			allSectors[i][j] = new Sector(sectorSize, sf::Vector2f(i*sectorSize, j*sectorSize)); // push position too
+			std::cout << "Created new sector at position (" << i * sectorSize << ", " << j * sectorSize << ")" << std::endl;
+
+		}
+	}
+
 }
 
 Map::~Map() {
@@ -109,3 +145,20 @@ void Map::addShip(SpaceShip* ship)
 void Map::destroyShip(SpaceShip* ship)
 {
 }
+
+std::vector<VariantType> Map::checkColisionForAllShips()
+{
+
+	for (size_t i = 0; i < activeSectors.size(); ++i)
+	{
+
+	}
+
+	return std::vector<VariantType>();
+}
+
+void Map::printSectors()
+{
+	std::cout << "This is one of the sectors" << allSectors[3][2] << std::endl;
+}
+

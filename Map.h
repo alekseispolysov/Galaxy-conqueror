@@ -9,6 +9,27 @@
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
 
+class Sector {
+public:
+	sf::Vector2f position;
+	float witdth;
+	float height;
+	int sector_size;
+	sf::Rect<float> sectorRect;
+	std::vector <StarSystem*> sectorStars;
+	std::vector <SpaceShip*> sectorShips; 
+
+	// will be passed base value
+	Sector(int sectorSize, sf::Vector2f position);
+	~Sector();
+	std::vector <VariantType> checkColisionInSector();
+
+
+private:
+
+};
+
+//
 class Map
 {
 public:
@@ -25,6 +46,11 @@ public:
 	std::vector <VariantType> selectedObjects;
 	std::vector <VariantType> selectableObjects;
 
+	std::vector <std::vector<Sector*>> allSectors;
+	std::vector <std::vector<Sector*>> activeSectors;
+
+	int sectorSize = 100;
+
 	Map(sf::Vector2f mapSize);
 	~Map();
 	void Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor);
@@ -39,6 +65,8 @@ public:
 	void cleanSelection();
 	void destroyShip(SpaceShip* ship);
 
+	std::vector <VariantType> checkColisionForAllShips();
+	void printSectors();
 private:
 
 };
