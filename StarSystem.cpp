@@ -102,7 +102,7 @@ sf::Shader* StarSystem::setShader(sf::RenderWindow& win,sf::Shader& shader, floa
     
     // applying offsets to shaders position
     // # add zooming logic to update shader correctlly
-    sf::Vector2f viewOffset = (currentCenter - sf::Vector2f(sizeU.x / 2, 0)  + sf::Vector2f(0, sizeU.y / 2)) ;
+    sf::Vector2f viewOffset = (currentCenter - sf::Vector2f(sizeU.x / 2, 0)  + sf::Vector2f(0, sizeU.y / 2));
     //sf::Vector2f viewOffset = currentCenter - viewSize / 2.0f; 
 
     //viewOffset.y = -viewOffset.y; 

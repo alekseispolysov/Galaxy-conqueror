@@ -13,6 +13,7 @@ public:
     sf::Vector2f pos;
     sf::Vector2f endPos;
     sf::Vector2f direction = sf::Vector2f(0.0f, 0.0f);
+    sf::Vector2f shipOrigin;
     float speed = 100.0f;
     
     std::string team = ("base_team");

@@ -20,6 +20,7 @@ SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre):pos(pos), shipT
 		textureRect.height * scale.y
 	);
 	// # bug FIX CENTER DEPENDENCY ON SIZE OF THE TEXTURE
+	shipOrigin = sf::Vector2f(spriteSize.x * 5, spriteSize.y * 5);
 	shipSprite.setOrigin(spriteSize.x * 5 , spriteSize.y * 5); // Right now it is in center?
 	//std::cout << "Sprite center is created in: " << shipSprite.getOrigin().x << ", " << shipSprite.getOrigin().y << std::endl;
 	shipSprite.setPosition(sf::Vector2f(pos.x - shipSprite.getOrigin().x, pos.y - shipSprite.getOrigin().y));

@@ -15,7 +15,7 @@ public:
 	float witdth;
 	float height;
 	int sector_size;
-	sf::Rect<float> sectorRect;
+	sf::RectangleShape sectorRect;
 	std::vector <StarSystem*> sectorStars;
 	std::vector <SpaceShip*> sectorShips; 
 
@@ -29,7 +29,7 @@ private:
 
 };
 
-//
+//   ===========================================================================================================
 class Map
 {
 public:
@@ -47,7 +47,7 @@ public:
 	std::vector <VariantType> selectableObjects;
 
 	std::vector <std::vector<Sector*>> allSectors;
-	std::vector <std::vector<Sector*>> activeSectors;
+	std::vector <Sector*> activeSectors;
 
 	int sectorSize = 100;
 
@@ -67,6 +67,7 @@ public:
 
 	std::vector <VariantType> checkColisionForAllShips();
 	void printSectors();
+	void determineSectorsForObjects();
 private:
 
 };

@@ -127,11 +127,20 @@ int main()
 
     SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture);
     SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture);
-    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 100.0f), &shipImageTexture);
+    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture);
+
+
 
     mapGameObject.addShip(&rocket);
     mapGameObject.addShip(&superShip);
     mapGameObject.addShip(&newShip);
+
+    /*for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
+    {
+        mapGameObject.allShips[i]->Display(window);
+    }*/
+
+    mapGameObject.determineSectorsForObjects();
     // define clocks
 
     sf::Clock clock; // from here impolimenting object movement
@@ -549,7 +558,7 @@ int main()
 
         //std::cout << "Second star x, y";
 
-        mapGameObject.printSectors();
+        //mapGameObject.printSectors(); test function, I can print what I want from sectors
         
         mapGameObject.Display(window, shaderStar, zoomFactor);
 
