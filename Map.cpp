@@ -12,6 +12,17 @@ Sector::Sector(int sectorSize, sf::Vector2f position):sector_size(sectorSize),po
 {
 	sectorRect.setPosition(position);
 	sectorRect.setSize(sf::Vector2f(static_cast<float>(sectorSize), static_cast<float>(sectorSize)));
+
+	// prespsat logiku
+	sectorBorder[0] = sf::Vertex(sf::Vector2f(position.x, position.y), sf::Color::White);
+	sectorBorder[1] = sf::Vertex(sf::Vector2f(position.x + sectorSize, position.y), sf::Color::White);
+	sectorBorder[2] = sf::Vertex(sf::Vector2f(position.x + sectorSize, position.y), sf::Color::White);
+	sectorBorder[3] = sf::Vertex(sf::Vector2f(position.x + sectorSize, position.y + sectorSize), sf::Color::White);
+	sectorBorder[4] = sf::Vertex(sf::Vector2f(position.x + sectorSize, position.y + sectorSize), sf::Color::White);
+	sectorBorder[5] = sf::Vertex(sf::Vector2f(position.x, position.y + sectorSize), sf::Color::White);
+	sectorBorder[6] = sf::Vertex(sf::Vector2f(position.x, position.y + sectorSize), sf::Color::White);
+	sectorBorder[7] = sf::Vertex(sf::Vector2f(position.x, position.y), sf::Color::White);
+
 }
 
 Sector::~Sector()
@@ -21,6 +32,11 @@ Sector::~Sector()
 std::vector<VariantType> Sector::checkColisionInSector()
 {
 	return std::vector<VariantType>();
+}
+
+void Sector::displaySector(sf::RenderWindow& win)
+{
+	win.draw(sectorBorder, 8, sf::Lines);
 }
 
 
@@ -43,7 +59,7 @@ Map::Map(sf::Vector2f mapSize):mapSize(mapSize){
 	float sectorVectorSizeY = mapSize.y / sectorSize; //6
 
 	allSectors.resize(sectorVectorSizeX);
-	activeSectors.resize(sectorVectorSizeX);
+	//activeSectors.resize(sectorVectorSizeX);
 
 	for (size_t i = 0; i < sectorVectorSizeX; ++i)
 	{
@@ -182,9 +198,9 @@ void Map::determineSectorsForObjects()
 			// get center of the ship and relatively to its center add it to right sector
 			// write this logic and after this try to understand why we should write all variables in private?
 			// GET VARIANT TYPE?
-			int sectorX = (ship->shipOrigin.x + ship->pos.x) / sectorSize;
+			int sectorX = (ship->pos.x) / sectorSize;
 			std::cout << ship->shipOrigin.x + ship->pos.x << std::endl;
-			int sectorY = (ship->shipOrigin.y + ship->pos.y) / sectorSize;
+			int sectorY = (ship->pos.y) / sectorSize;
 			Sector* s = allSectors[sectorX][sectorY];
 			s->sectorShips.push_back(ship);
 			std::cout << "There are coordinates for the sector, that is currectly processed: " << sectorX << ", " << sectorY << std::endl;
@@ -200,18 +216,19 @@ void Map::determineSectorsForObjects()
 			// launch colision only for stars
 			// Here I need to iterate throw all of the sectors and understand, which sector is it
 			// I am doing it wrong, because it is not okay value
+			// this algorithm is slow. I need to get neigboor sectors, depended on size of the star and size of the sectors (for loading faster)
 			std::cout << mapSize.x / sectorSize << std::endl;
 			for (size_t z = 0; z < mapSize.x / sectorSize; ++z)
 			{
 				for (size_t j = 0; j < mapSize.y / sectorSize; ++j)
 				{
 					// check for collisions with every sector -> If sector's X, Y collides with star rect, then add it to the sector
-					std::cout << "this parametrs are errorfuls: " << z << ", " << j << std::endl;
+					//std::cout << "this parametrs are errorfuls: " << z << ", " << j << std::endl;
 					Sector* s = allSectors[z][j]; // error
 					if (star->star.getGlobalBounds().intersects(s->sectorRect.getGlobalBounds())) { // colides
 						// add star to sector
 						// then add star to sector
-
+						starsSectors.push_back(s); // debug purposes
 						s->sectorStars.push_back(star);
 						std::cout << "To sector: " << s << " has been added star" << star << std::endl;
 					}

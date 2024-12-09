@@ -19,11 +19,13 @@ public:
 	std::vector <StarSystem*> sectorStars;
 	std::vector <SpaceShip*> sectorShips; 
 
+	sf::Vertex sectorBorder[8];
+
 	// will be passed base value
 	Sector(int sectorSize, sf::Vector2f position);
 	~Sector();
 	std::vector <VariantType> checkColisionInSector();
-
+	void displaySector(sf::RenderWindow& win);
 
 private:
 
@@ -48,6 +50,8 @@ public:
 
 	std::vector <std::vector<Sector*>> allSectors;
 	std::vector <Sector*> activeSectors;
+	std::vector <Sector*> shipsSectors;
+	std::vector <Sector*> starsSectors;
 
 	int sectorSize = 100;
 

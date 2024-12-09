@@ -505,26 +505,61 @@ int main()
 
         //rocket.Move(deltaTime);
 
+        // When I set ship to move, I will add this sector to active. When it is not moving, I will delete it from active sectors
+        // collision rewrite, optimization
+        for (size_t i = 0; i < mapGameObject.activeSectors.size(); ++i)
+        {
+            //check colision in active sectors
+            // 
+            //std::cout << "size of active sectors.ships: " << mapGameObject.activeSectors[i]->sectorShips.size() << std::endl;
+            for (size_t j = 0; j < mapGameObject.activeSectors[i]->sectorShips.size(); ++j)
+            {
+                // check for collisions in ships, that are located between multiple sectors
+
+                //check colision between ships and ships in active sectors
+
+                //check colision between stars and ships in active sectors
+                for (size_t e = 0; e < mapGameObject.activeSectors[i]->sectorStars.size(); ++e)
+                {
+                        if (mapGameObject.activeSectors[i]->sectorStars[e]->checkCollisionShip(mapGameObject.activeSectors[i]->sectorShips[j])) {
+                            mapGameObject.activeSectors[i]->sectorShips[j]->visiable = false;
+                            std::cout << "Coliding"; // why when it gets created, it colides? ?????!??!?!?!?!??!?!?!?!
+                            break;
+                        }
+                        else {
+                            mapGameObject.activeSectors[i]->sectorShips[j]->visiable = true;
+
+                        }
+                }
+            }
+
+            
+
+
+        }
+
+
 
         // check collision inside this loop
 
         for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
         {
             // check colision between star and ship
-            for (size_t j = 0; j < mapGameObject.stars.size(); ++j) {
-                if (mapGameObject.stars[j]->checkCollisionShip(mapGameObject.allShips[i])) {
-                    mapGameObject.allShips[i]->visiable = false;
-                    std::cout << "Coliding"; // why when it gets created, it colides? ?????!??!?!?!?!??!?!?!?!
-                    break;
-                }
-                else {
-                    mapGameObject.allShips[i]->visiable = true;
+            //for (size_t j = 0; j < mapGameObject.stars.size(); ++j) {
+            //    if (mapGameObject.stars[j]->checkCollisionShip(mapGameObject.allShips[i])) {
+            //        mapGameObject.allShips[i]->visiable = false;
+            //        std::cout << "Coliding"; // why when it gets created, it colides? ?????!??!?!?!?!??!?!?!?!
+            //        break;
+            //    }
+            //    else {
+            //        mapGameObject.allShips[i]->visiable = true;
 
-                }
-            }
+            //    }
+            //}
             // check colision between ships
 
 
+            // I am calling move function here
             mapGameObject.allShips[i]->Move(deltaTime);
         }
 
@@ -534,8 +569,14 @@ int main()
         // Очистка окна (цвет фона)
         window.clear(sf::Color::Black);
 
+
         window.draw(backgroundSprite);
 
+        // Drawing all active sectors 
+        for (size_t i = 0; i < mapGameObject.activeSectors.size(); i++)
+        {
+            mapGameObject.activeSectors[i]->displaySector(window);
+        }
 
         //draw lines before stars
         //window.draw(line, 3, sf::Lines); 
