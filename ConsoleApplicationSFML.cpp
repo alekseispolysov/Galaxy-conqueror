@@ -5,9 +5,24 @@
 #include <variant>
 #include <algorithm>
 #include <SFML/Graphics.hpp>
+#include <tuple>
 #include "StarSystem.h"
 #include "Map.h"
 #include "SpaceShip.h"
+
+
+
+
+// function to compare two arrays with 2 elements
+bool compareArrays(const int a[2], const int b[2]) {
+    for (int i = 0; i < 2; ++i) {
+        if (a[i] != b[i]) {
+            return false; // Found a difference
+        }
+    }
+    return true; // All elements match
+}
+
 
 int main()
 {
@@ -438,7 +453,15 @@ int main()
                         
                         if (std::holds_alternative<SpaceShip*>(mapGameObject.selectedObjects[i])) {
                             SpaceShip* ship = std::get<SpaceShip*>(mapGameObject.selectedObjects[i]);
+                    
+                            if (!ship->inMotion) {
+                            mapGameObject.movingShips.push_back(ship);
+
+                            }
+
+
                             ship->setNewTarget(mouseWorldPos);
+                            
                         }
 
 
@@ -505,45 +528,188 @@ int main()
 
         //rocket.Move(deltaTime);
 
-        // When I set ship to move, I will add this sector to active. When it is not moving, I will delete it from active sectors
-        // collision rewrite, optimization
-        for (size_t i = 0; i < mapGameObject.activeSectors.size(); ++i)
+        
+
+        window.clear(sf::Color::Black);
+
+        window.draw(backgroundSprite); 
+
+        // check collision inside this loop
+       
+        for (size_t i = 0; i < mapGameObject.movingShips.size(); i++)
         {
-            //check colision in active sectors
-            // 
-            //std::cout << "size of active sectors.ships: " << mapGameObject.activeSectors[i]->sectorShips.size() << std::endl;
-            for (size_t j = 0; j < mapGameObject.activeSectors[i]->sectorShips.size(); ++j)
+            int sectorX = (mapGameObject.movingShips[i]->pos.x) / mapGameObject.sectorSize;
+            int sectorY = (mapGameObject.movingShips[i]->pos.y) / mapGameObject.sectorSize;
+
+            std::cout << "Sector: " << sectorX << ", " << sectorY << std::endl;
+
+            // iterate throw the sector objects
+            SpaceShip* curShip = mapGameObject.movingShips[i];
+            Sector* s = mapGameObject.allSectors[sectorX][sectorY];
+
+            //if (curShip->sector != {sectorX, sectorY}) {
+            //}
+
+            int sSector[2];
+            sSector[0] = sectorX;
+            sSector[1] = sectorY;
+            // changing sector
+            if (!compareArrays(curShip->sector, sSector)) {
+                //std::cout << "\n\n\nCHANGE HAS HAPPEND \n\n\n";
+                //mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.erase(std::remove(mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.begin(), mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.end(), ship), mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.end());
+                
+                auto new_end = std::remove(mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.begin(), mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.end(), curShip);
+
+                // Erase the "removed" elements from the vector
+                mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.erase(new_end, mapGameObject.allSectors[curShip->sector[0]][curShip->sector[1]]->sectorShips.end());
+
+                mapGameObject.allSectors[sectorX][sectorY]->sectorShips.push_back(curShip);
+
+                curShip->sector[0] = sectorX;
+                curShip->sector[1] = sectorY;
+
+            }
+
+            //s->displaySector(window);
+            mapGameObject.allSectors[sectorX][sectorY]->displaySector(window);
+
+            for (size_t j = 0; j < s->sectorStars.size(); ++j)
             {
-                // check for collisions in ships, that are located between multiple sectors
-
-                //check colision between ships and ships in active sectors
-
-                //check colision between stars and ships in active sectors
-                for (size_t e = 0; e < mapGameObject.activeSectors[i]->sectorStars.size(); ++e)
-                {
-                        if (mapGameObject.activeSectors[i]->sectorStars[e]->checkCollisionShip(mapGameObject.activeSectors[i]->sectorShips[j])) {
-                            mapGameObject.activeSectors[i]->sectorShips[j]->visiable = false;
-                            std::cout << "Coliding"; // why when it gets created, it colides? ?????!??!?!?!?!??!?!?!?!
-                            break;
-                        }
-                        else {
-                            mapGameObject.activeSectors[i]->sectorShips[j]->visiable = true;
-
-                        }
+                if (s->sectorStars[j]->checkCollisionShip(mapGameObject.movingShips[i])) {
+                    std::cout << "New collision is working" << std::endl;
                 }
             }
 
+            for (size_t j = 0; j < s->sectorShips.size(); j++)
+            {
+                // collision between ships in current sector
+                if (mapGameObject.movingShips[i]->ColisionCheck(s->sectorShips[j]) && mapGameObject.movingShips[i] != s->sectorShips[j]) {
+                    std::cout << "colision with ship are working" << std::endl;
+                    std::cout << "destroying both ships" << std::endl;
+                    delete curShip;
+                }
+            }
+
+
+
+            // more visiably appearing collision check:
+            // Calculate edges of the ship and the sector
+            float shipLeft = curShip->pos.x - curShip->spriteSize.x;
+            float shipRight = curShip->pos.x + curShip->spriteSize.x;
+            float shipTop = curShip->pos.y - curShip->spriteSize.y;
+            float shipBottom = curShip->pos.y + curShip->spriteSize.y;
+
+            float sectorLeft = s->position.x;
+            float sectorRight = s->position.x + s->sector_size;
+            float sectorTop = s->position.y;
+            float sectorBottom = s->position.y + s->sector_size;
+
+            // Collision checks
+            bool collidingRight = shipRight >= sectorRight;
+            bool collidingUp = shipTop <= sectorTop;
+            bool collidingLeft = shipLeft <= sectorLeft;
+            bool collidingDown = shipBottom >= sectorBottom;
+
+            bool collidingRightUp = collidingRight && collidingUp;
+            bool collidingRightDown = collidingRight && collidingDown;
+            bool collidingLeftUp = collidingLeft && collidingUp;
+            bool collidingLeftDown = collidingLeft && collidingDown;
+
+            bool notCollided = true;
+
+            // Check for right and up collision simultaneously
+            if (collidingRightUp) {
+                std::cout << "Collision with right and up sector simultaneously" << std::endl;
+                notCollided = false;
+
+            }
+            // Check for left and up collision simultaneously
+            if (collidingLeftUp) {
+                std::cout << "Collision with left and up sector simultaneously" << std::endl;
+                notCollided = false;
+            }
+            // Check for left and down collision simultaneously
+            if (collidingLeftDown) {
+                std::cout << "Collision with left and down sector simultaneously" << std::endl;
+                notCollided = false;
+            }
+            // Check for right and down collision simultaneously
+            if (collidingRightDown) {
+                std::cout << "Collision with right and down sector simultaneously" << std::endl;
+                notCollided = false;
+            }
             
+            if (collidingDown && notCollided) {
+                std::cout << "Down" << std::endl;
+                Sector* s = mapGameObject.allSectors[sectorX][sectorY+1];
+                std::cout << "COLISION IS:" << std::get<0>(mapGameObject.collisionBetweenSectors(curShip, s)) << std::endl;
+            }
+            if (collidingUp && notCollided) {
+                std::cout << "Up" << std::endl;
+                Sector* s = mapGameObject.allSectors[sectorX][sectorY - 1];
+                std::cout << "COLISION IS:" << std::get<0>(mapGameObject.collisionBetweenSectors(curShip, s)) << std::endl;
+            }
+            if (collidingLeft && notCollided) {
+                std::cout << "Left" << std::endl;
+                Sector* s = mapGameObject.allSectors[sectorX - 1][sectorY];
+                std::cout << "COLISION IS:" << std::get<0>(mapGameObject.collisionBetweenSectors(curShip, s)) << std::endl;
+
+            }
+            if (collidingRight && notCollided) {
+                std::cout << "Right" << std::endl;
+                Sector* s = mapGameObject.allSectors[sectorX + 1][sectorY];
+                std::cout << "COLISION IS:" << std::get<0>(mapGameObject.collisionBetweenSectors(curShip, s)) << std::endl;
+            }
+            // sector colision for ship check
 
 
-        }
 
 
 
-        // check collision inside this loop
 
-        for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
-        {
+            // You can still keep individual checks for other directions if needed
+            /*if (collidingRight) {
+                std::cout << "Collision with right sector" << std::endl;
+            }
+            if (collidingUp) {
+                std::cout << "Collision with up sector" << std::endl;
+            }*/
+
+
+            //// right sector check
+            //if (curShip->spriteSize.x + curShip->pos.x >= s->position.x + s->sector_size) {
+            //    // check for up and down
+            //    std::cout << "Colision with right working" << curShip->pos.x << " + " << curShip->spriteSize.x << " => " << s->position.x << " + " << s->sector_size << std::endl;
+            //}
+            //// left sector check
+            //if (curShip->pos.x - curShip->spriteSize.x <= s->position.x) {
+            //    // check for up and down
+            //    std::cout << "Colision with left working" << std::endl;
+            //}
+            //// up sector check
+            //if (curShip->pos.y - curShip->spriteSize.x <= s->position.y) {
+            //    // check for left and right
+            //    std::cout << "Colision with up working" << std::endl;
+            //}
+            //// down sector check
+            //if (curShip->spriteSize.x + curShip->pos.y >= s->position.y + s->sector_size) {
+            //    // check for left and right
+            //    std::cout << "Colision with down working" << std::endl;
+            //}
+
+
+            if (true) {
+                // check if ships position, colide with active sector, that is assigned to ship
+                // check if ship collides with sector, that its currently in
+                mapGameObject.movingShips[i]->pos.x;
+                mapGameObject.movingShips[i]->pos.y;
+                
+
+
+            }
+
+
+
             // check colision between star and ship
             //for (size_t j = 0; j < mapGameObject.stars.size(); ++j) {
             //    if (mapGameObject.stars[j]->checkCollisionShip(mapGameObject.allShips[i])) {
@@ -558,29 +724,87 @@ int main()
             //}
             // check colision between ships
 
+            // colision of ships
+            // When I set ship to move, I will add this sector to active. When it is not moving, I will delete it from active sectors
+        // collision rewrite, optimization
+            //for (size_t g = 0; g < mapGameObject.activeSectors.size(); ++g)
+            //{
+            //    //check colision in active sectors
+            //    
+            //     
+            //    
+            //    //std::cout << "size of active sectors.ships: " << mapGameObject.activeSectors[g]->sectorShips.size() << std::endl;
+            //    for (size_t j = 0; j < mapGameObject.activeSectors[g]->sectorShips.size(); ++j)
+            //    {
+            //        // check if ship has left the sector
+            //        if (true) {
+            //            // remove it from this sector
+            //            
+            //            // add it to another sector
+
+            //        }
+
+
+            //        // check for collisions in ships, that are located between multiple sectors
+
+            //        //check colision between ships and ships in active sectors
+
+            //        //check colision between stars and ships in active sectors
+            //        for (size_t e = 0; e < mapGameObject.activeSectors[g]->sectorStars.size(); ++e)
+            //        {
+
+
+            //            if (mapGameObject.activeSectors[g]->sectorStars[e]->checkCollisionShip(mapGameObject.activeSectors[g]->sectorShips[j])) {
+            //                mapGameObject.activeSectors[g]->sectorShips[j]->visiable = false;
+            //                std::cout << "Coliding"; // why when it gets created, it colides? ?????!??!?!?!?!??!?!?!?!
+            //                break;
+            //            }
+            //            else {
+            //                mapGameObject.activeSectors[g]->sectorShips[j]->visiable = true;
+
+            //            }
+            //        }
+            //    }
+
+            //}
+
+
+
+
+
+
+
+
+
 
             // I am calling move function here
-            mapGameObject.allShips[i]->Move(deltaTime);
+            mapGameObject.movingShips[i]->Move(deltaTime);
+            if (!mapGameObject.movingShips[i]->inMotion) {
+                mapGameObject.movingShips.erase(std::remove(mapGameObject.movingShips.begin(), mapGameObject.movingShips.end(), mapGameObject.movingShips[i]), mapGameObject.movingShips.end());
+                break;
+            }
         }
 
 
 
 
         // Очистка окна (цвет фона)
-        window.clear(sf::Color::Black);
+        
 
 
-        window.draw(backgroundSprite);
+        
+
+        //mapGameObject.allSectors[3][2]->displaySector(window);
 
         // Drawing all active sectors 
-        for (size_t i = 0; i < mapGameObject.activeSectors.size(); i++)
-        {
-            mapGameObject.activeSectors[i]->displaySector(window);
-        }
+        //for (size_t i = 0; i < mapGameObject.activeSectors.size(); i++)
+        //{
+        //    mapGameObject.activeSectors[i]->displaySector(window);
+        //}
 
         //draw lines before stars
         //window.draw(line, 3, sf::Lines); 
-
+        
         // Set Star Shader parametrs
         // 
         // To invert Y coordinates

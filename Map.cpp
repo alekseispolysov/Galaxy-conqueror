@@ -5,6 +5,7 @@
 #include <iostream>
 #include <variant>
 #include <algorithm>
+#include <tuple>
 
 
 
@@ -82,6 +83,8 @@ Map::~Map() {
 		delete star;
 	}
 	stars.clear();*/
+
+
 }
 
 void Map::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor)
@@ -203,6 +206,8 @@ void Map::determineSectorsForObjects()
 			int sectorY = (ship->pos.y) / sectorSize;
 			Sector* s = allSectors[sectorX][sectorY];
 			s->sectorShips.push_back(ship);
+			ship->sector[0] = sectorX;
+			ship->sector[1] = sectorY;
 			std::cout << "There are coordinates for the sector, that is currectly processed: " << sectorX << ", " << sectorY << std::endl;
 			std::cout << "To sector object on pointer: " << s << ", has been added new ship, that has pointer: " << ship << std::endl;
 			// Change active sectors
@@ -239,5 +244,18 @@ void Map::determineSectorsForObjects()
 		}
 
 	}
+}
+
+std::tuple<bool, SpaceShip*> Map::collisionBetweenSectors(SpaceShip* ship, Sector* s)
+{
+	for (size_t j = 0; j < s->sectorShips.size(); j++)
+	{
+		// collision between ships close sectors
+		if (ship->ColisionCheck(s->sectorShips[j])) {
+			return std::make_tuple(true, ship);
+		}
+	}
+
+	return std::make_tuple(false, nullptr);
 }
 

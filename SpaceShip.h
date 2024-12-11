@@ -10,11 +10,13 @@ public:
     bool selected = false;
     bool isMoving = false;
     bool isRotating = false;
+    bool inMotion = false;
     sf::Vector2f pos;
     sf::Vector2f endPos;
     sf::Vector2f direction = sf::Vector2f(0.0f, 0.0f);
     sf::Vector2f shipOrigin;
     float speed = 100.0f;
+    int sector[2];
     
     std::string team = ("base_team");
     
@@ -31,6 +33,7 @@ public:
     float fuel;
     sf::Texture* shipTexutre;
     sf::Sprite shipSprite;
+    sf::Vector2f spriteSize;
     // replace vector with 2D coordinates array. If ship path is reset, then it just resets array. Ship path can only be set by stars
     //std::vector<StarSystem*> path;
 
@@ -39,7 +42,7 @@ public:
     ~SpaceShip();
 
     //collision check
-    void ColisionCheck();
+    bool ColisionCheck(SpaceShip* ship);
 
     void SetTeam(std::string team);
 

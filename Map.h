@@ -4,7 +4,7 @@
 #include <iostream>
 #include <variant>
 #include <algorithm>
-
+#include <tuple>
 
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
@@ -47,6 +47,7 @@ public:
 	std::vector <SpaceShip*> selectedShips;
 	std::vector <VariantType> selectedObjects;
 	std::vector <VariantType> selectableObjects;
+	std::vector <SpaceShip*> movingShips;
 
 	std::vector <std::vector<Sector*>> allSectors;
 	std::vector <Sector*> activeSectors;
@@ -72,6 +73,7 @@ public:
 	std::vector <VariantType> checkColisionForAllShips();
 	void printSectors();
 	void determineSectorsForObjects();
+	std::tuple<bool, SpaceShip*> collisionBetweenSectors(SpaceShip* ship, Sector* s); 
 private:
 
 };

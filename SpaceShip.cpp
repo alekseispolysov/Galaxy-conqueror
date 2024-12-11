@@ -15,7 +15,7 @@ SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre):pos(pos), shipT
 	shipSprite.setScale(sf::Vector2f(0.1f, 0.1f)); // size 2times smaller
 	sf::IntRect textureRect = shipSprite.getTextureRect();
 	sf::Vector2f scale = shipSprite.getScale();
-	sf::Vector2f spriteSize(
+	spriteSize = sf::Vector2f(
 		textureRect.width * scale.x,
 		textureRect.height * scale.y
 	);
@@ -25,6 +25,7 @@ SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre):pos(pos), shipT
 	//std::cout << "Sprite center is created in: " << shipSprite.getOrigin().x << ", " << shipSprite.getOrigin().y << std::endl;
 	shipSprite.setPosition(sf::Vector2f(pos.x - shipSprite.getOrigin().x, pos.y - shipSprite.getOrigin().y));
 	//shipSprite.setScale()
+	Move(1.0f); // when I call move function on creation. It is not coliding
 }
 
 
@@ -32,8 +33,9 @@ SpaceShip::~SpaceShip() {
 
 }
 
-void SpaceShip::ColisionCheck()
+bool SpaceShip::ColisionCheck(SpaceShip* ship)
 {
+	return shipSprite.getGlobalBounds().intersects(ship->shipSprite.getGlobalBounds());
 }
 
 void SpaceShip::SetTeam(std::string team)
@@ -79,6 +81,7 @@ void SpaceShip::setNewTarget(sf::Vector2f position)
 	//std::cout << "Get new angle:" << endAngle << std::endl;
 	
 	isMoving = false;
+	inMotion = true;
 	if (endAngle != curAngle) {
 
 	isRotating = true;
@@ -130,6 +133,7 @@ void SpaceShip::Move(float deltaTime)
 			pos = endPos;
 			isMoving = false;
 			isRotating = false;
+			inMotion = false;
 		}
 
 	}
