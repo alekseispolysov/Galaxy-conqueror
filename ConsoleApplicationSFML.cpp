@@ -4,6 +4,7 @@
 #include <iostream>
 #include <variant>
 #include <algorithm>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include <tuple>
 #include "StarSystem.h"
@@ -586,7 +587,7 @@ int main()
                 if (mapGameObject.movingShips[i]->ColisionCheck(s->sectorShips[j]) && mapGameObject.movingShips[i] != s->sectorShips[j]) {
                     std::cout << "colision with ship are working" << std::endl;
                     std::cout << "destroying both ships" << std::endl;
-                    delete curShip;
+                    //delete curShip; Tommorow I will finish deletion and collision (I need to remake pointers everywhere)
                 }
             }
 

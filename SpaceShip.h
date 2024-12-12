@@ -17,6 +17,7 @@ public:
     sf::Vector2f shipOrigin;
     float speed = 100.0f;
     int sector[2];
+    int id = 0;
     
     std::string team = ("base_team");
     

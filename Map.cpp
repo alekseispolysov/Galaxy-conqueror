@@ -163,6 +163,9 @@ void Map::cleanSelection() {
 
 void Map::addShip(SpaceShip* ship)
 {
+	// get all ship size and on this make id
+	ship->id = allShips.size();
+
 	allShips.push_back(ship);
 	selectableObjects.push_back(ship);
 	std::cout << "Added ship into variant array: " << ship << std::endl;
@@ -172,16 +175,16 @@ void Map::destroyShip(SpaceShip* ship)
 {
 }
 
-std::vector<VariantType> Map::checkColisionForAllShips()
-{
-
-	for (size_t i = 0; i < activeSectors.size(); ++i)
-	{
-
-	}
-
-	return std::vector<VariantType>();
-}
+//std::vector<VariantType> Map::checkColisionForAllShips()
+//{
+//
+//	for (size_t i = 0; i < activeSectors.size(); ++i)
+//	{
+//
+//	}
+//
+//	return std::vector<VariantType>();
+//}
 
 void Map::printSectors()
 {
@@ -213,7 +216,7 @@ void Map::determineSectorsForObjects()
 			// Change active sectors
 			//activeSectors.resize();
 			//activeSectors[i].resize(sectorVectorSizeY);
-			activeSectors.push_back(s);
+			//activeSectors.push_back(s);
 
 		}
 		else if (std::holds_alternative<StarSystem*>(selectableObjects[i])) {
@@ -257,5 +260,21 @@ std::tuple<bool, SpaceShip*> Map::collisionBetweenSectors(SpaceShip* ship, Secto
 	}
 
 	return std::make_tuple(false, nullptr);
+}
+
+void Map::removeShip(SpaceShip* ship)
+{
+	
+	// deleting ship from vector all ships
+	// all.erase(std::remove(.begin(), .end(), ship), .end());
+	// erase from sector
+	allSectors[ship->sector[0]][ship->sector[1]];
+	// erase from all ships
+	allShips.erase(std::remove(allShips.begin(), allShips.end(), ship), allShips.end());
+
+	// deleting ship
+	delete ship;
+
+
 }
 

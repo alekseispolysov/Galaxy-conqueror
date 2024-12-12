@@ -16,8 +16,8 @@ public:
 	float height;
 	int sector_size;
 	sf::RectangleShape sectorRect;
-	std::vector <StarSystem*> sectorStars;
-	std::vector <SpaceShip*> sectorShips; 
+	std::vector <StarSystem*> sectorStars;// this needs to be changed
+	std::vector <SpaceShip*> sectorShips;// this needs to be changed
 
 	sf::Vertex sectorBorder[8];
 
@@ -46,13 +46,13 @@ public:
 	std::vector <SpaceShip*> allShips;
 	std::vector <SpaceShip*> selectedShips;
 	std::vector <VariantType> selectedObjects;
-	std::vector <VariantType> selectableObjects;
-	std::vector <SpaceShip*> movingShips;
+	std::vector <VariantType> selectableObjects; 
+	std::vector <SpaceShip*> movingShips; // this
 
-	std::vector <std::vector<Sector*>> allSectors;
-	std::vector <Sector*> activeSectors;
-	std::vector <Sector*> shipsSectors;
-	std::vector <Sector*> starsSectors;
+	std::vector <std::vector<Sector*>> allSectors; // this
+	//std::vector <Sector*> activeSectors; // this
+	std::vector <Sector*> shipsSectors; // this needs to be changed
+	std::vector <Sector*> starsSectors; 
 
 	int sectorSize = 100;
 
@@ -70,10 +70,13 @@ public:
 	void cleanSelection();
 	void destroyShip(SpaceShip* ship);
 
-	std::vector <VariantType> checkColisionForAllShips();
+	//std::vector <VariantType> checkColisionForAllShips();
 	void printSectors();
 	void determineSectorsForObjects();
-	std::tuple<bool, SpaceShip*> collisionBetweenSectors(SpaceShip* ship, Sector* s); 
+	std::tuple<bool, SpaceShip*> collisionBetweenSectors(SpaceShip* ship, Sector* s);
+
+	void removeShip(SpaceShip* ship);
+
 private:
 
 };
