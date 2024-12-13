@@ -140,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplicationSFML.cpp" />
+    <ClCompile Include="DynamicSparseSet.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="SpaceShip.cpp" />
     <ClCompile Include="StarSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicSparseSet.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="SpaceShip.h" />
     <ClInclude Include="StarSystem.h" />

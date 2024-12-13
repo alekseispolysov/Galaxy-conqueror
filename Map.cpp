@@ -6,6 +6,8 @@
 #include <variant>
 #include <algorithm>
 #include <tuple>
+#include "DynamicSparseSet.h"
+#include <cassert>
 
 
 
@@ -138,6 +140,7 @@ void Map::addStar(StarSystem* star)
 	selectableObjects.push_back(star);
 	// determine sector, when added
 
+
 }
 
 // typed functions????????
@@ -149,6 +152,7 @@ void Map::selectStar(StarSystem* star)
 void Map::selectShip(SpaceShip* ship)
 {
 	selectedShips.push_back(ship);
+	
 }
 
 void Map::cleanSelection() {
@@ -164,7 +168,10 @@ void Map::cleanSelection() {
 void Map::addShip(SpaceShip* ship)
 {
 	// get all ship size and on this make id
-	ship->id = allShips.size();
+	//ship->id = newAllShips.size();
+
+	newAllShips.insert(ship->id, ship);
+	newAllShips.print();
 
 	allShips.push_back(ship);
 	selectableObjects.push_back(ship);
@@ -267,12 +274,20 @@ void Map::removeShip(SpaceShip* ship)
 	
 	// deleting ship from vector all ships
 	// all.erase(std::remove(.begin(), .end(), ship), .end());
-	// erase from sector
-	allSectors[ship->sector[0]][ship->sector[1]];
-	// erase from all ships
-	allShips.erase(std::remove(allShips.begin(), allShips.end(), ship), allShips.end());
+	// erase from selectable objects
 
-	// deleting ship
+	// erase from selected objects
+
+	// erase ship from flying ships
+
+	// try to remove it from stars
+
+	// erase from sector
+	//allSectors[ship->sector[0]][ship->sector[1]];
+	// erase from all ships
+	//allShips.erase(std::remove(allShips.begin(), allShips.end(), ship->id), allShips.end()); // this line is a problem
+
+	//// deleting ship
 	delete ship;
 
 

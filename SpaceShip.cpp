@@ -9,7 +9,7 @@ sf::Vector2f normalize(const sf::Vector2f& vector) {
 	return vector / length; // Divide each component by the magnitude
 }
 
-SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre):pos(pos), shipTexutre(shipTexutre) {
+SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int id):pos(pos), shipTexutre(shipTexutre), id(id) {
 	//shipSprite.setTextureRect(sf::IntRect(0, 0, 30, 100)); // With that I can access the one sheet with all sprites
 	shipSprite.setTexture(*shipTexutre);
 	shipSprite.setScale(sf::Vector2f(0.1f, 0.1f)); // size 2times smaller

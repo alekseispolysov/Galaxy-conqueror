@@ -5,6 +5,10 @@
 #include <variant>
 #include <algorithm>
 #include <tuple>
+#include "DynamicSparseSet.h"
+#include <cassert>
+
+//class DynamicSparseSet;
 
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
@@ -18,6 +22,7 @@ public:
 	sf::RectangleShape sectorRect;
 	std::vector <StarSystem*> sectorStars;// this needs to be changed
 	std::vector <SpaceShip*> sectorShips;// this needs to be changed
+	
 
 	sf::Vertex sectorBorder[8];
 
@@ -48,6 +53,9 @@ public:
 	std::vector <VariantType> selectedObjects;
 	std::vector <VariantType> selectableObjects; 
 	std::vector <SpaceShip*> movingShips; // this
+
+	DynamicSparseSet<SpaceShip*> newAllShips;
+
 
 	std::vector <std::vector<Sector*>> allSectors; // this
 	//std::vector <Sector*> activeSectors; // this
