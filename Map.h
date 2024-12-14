@@ -15,13 +15,14 @@ using VariantType = std::variant<SpaceShip*, StarSystem*>;
 
 class Sector {
 public:
+	int sector_id = 0;
 	sf::Vector2f position;
 	float witdth;
 	float height;
 	int sector_size;
 	sf::RectangleShape sectorRect;
-	std::vector <StarSystem*> sectorStars;// this needs to be changed
-	std::vector <SpaceShip*> sectorShips;// this needs to be changed
+	DynamicSparseSet <int> sectorStars;// this needs to be changed
+	DynamicSparseSet <int> sectorShips;// this needs to be changed
 	
 
 	sf::Vertex sectorBorder[8];
@@ -29,7 +30,7 @@ public:
 	// will be passed base value
 	Sector(int sectorSize, sf::Vector2f position);
 	~Sector();
-	std::vector <VariantType> checkColisionInSector();
+	//std::vector <VariantType> checkColisionInSector();
 	void displaySector(sf::RenderWindow& win);
 
 private:
@@ -40,27 +41,40 @@ private:
 class Map
 {
 public:
+	// ids
+	int star_id_count = 0;
+	int ship_id_count = 0;
+	int sector_id_count = 0;
+
 	// Map size
 	sf::Vector2f mapSize;
 	// vertex array uninicialized
 	sf::Vertex mapBorder[8];
 
-	// arrays with objects
-	std::vector <StarSystem*> stars;
-	std::vector <StarSystem*> selectedStars;
-	std::vector <SpaceShip*> allShips;
-	std::vector <SpaceShip*> selectedShips;
-	std::vector <VariantType> selectedObjects;
-	std::vector <VariantType> selectableObjects; 
-	std::vector <SpaceShip*> movingShips; // this
-
-	DynamicSparseSet<SpaceShip*> newAllShips;
+	// SETS WITH actual objects
+	DynamicSparseSet <StarSystem> stars;
+	DynamicSparseSet <SpaceShip> allShips;
 
 
-	std::vector <std::vector<Sector*>> allSectors; // this
+	DynamicSparseSet <int> selectedShips;
+	DynamicSparseSet <int> selectedStars; 
+	// replace selectable objects with dynamicSparse set
+	/*std::vector <VariantType> selectedObjects;
+
+	std::vector <VariantType> selectableObjects; */
+
+	// need to remove Variant Type, because I don't need it
+
+
+	DynamicSparseSet <int> movingShips; // this
+
+	//DynamicSparseSet<SpaceShip*> newAllShips;
+
+
+	std::vector <std::vector<Sector>> allSectors; // this data type... Should I even consider vector?
 	//std::vector <Sector*> activeSectors; // this
-	std::vector <Sector*> shipsSectors; // this needs to be changed
-	std::vector <Sector*> starsSectors; 
+	std::vector <int> shipsSectors; // this needs to be changed
+	std::vector <int> starsSectors; 
 
 	int sectorSize = 100;
 
@@ -71,19 +85,19 @@ public:
 	void selectObject(VariantType obj);
 	bool checkIfObjectSelected(VariantType obj, bool del=false);
 
-	void addStar(StarSystem* star);
-	void selectStar(StarSystem* star);
-	void addShip(SpaceShip* ship);
-	void selectShip(SpaceShip* ship);
-	void cleanSelection();
-	void destroyShip(SpaceShip* ship);
+	void addStar(StarSystem star);
+	void addShip(SpaceShip ship);
+	void selectStar(int star_id);
+	void selectShip(int ship_id);
+	void destroyShip(int ship_id);
 
+	void cleanSelection();
 	//std::vector <VariantType> checkColisionForAllShips();
 	void printSectors();
 	void determineSectorsForObjects();
-	std::tuple<bool, SpaceShip*> collisionBetweenSectors(SpaceShip* ship, Sector* s);
+	std::tuple<bool, int> collisionBetweenSectors(int ship_id, int sector_id);
 
-	void removeShip(SpaceShip* ship);
+
 
 private:
 

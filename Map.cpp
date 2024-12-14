@@ -32,10 +32,10 @@ Sector::~Sector()
 {
 }
 
-std::vector<VariantType> Sector::checkColisionInSector()
-{
-	return std::vector<VariantType>();
-}
+//std::vector<VariantType> Sector::checkColisionInSector()
+//{
+//	return std::vector<VariantType>();
+//}
 
 void Sector::displaySector(sf::RenderWindow& win)
 {
@@ -61,19 +61,18 @@ Map::Map(sf::Vector2f mapSize):mapSize(mapSize){
 	float sectorVectorSizeX = mapSize.x / sectorSize; //8
 	float sectorVectorSizeY = mapSize.y / sectorSize; //6
 
+	// Resize the outer vector (size for sectors along X)
 	allSectors.resize(sectorVectorSizeX);
-	//activeSectors.resize(sectorVectorSizeX);
 
 	for (size_t i = 0; i < sectorVectorSizeX; ++i)
 	{
-		allSectors[i].resize(sectorVectorSizeY);
-		//activeSectors[i].resize(sectorVectorSizeY);
+		// Resize inner vector for each row (sectorVectorSizeY)
+		allSectors[i].clear(); // Clear the vector to ensure it's empty before adding new elements
+		allSectors[i].reserve(sectorVectorSizeY); // Optionally reserve space for efficiency
 
 		for (size_t j = 0; j < sectorVectorSizeY; ++j) {
-
-			allSectors[i][j] = new Sector(sectorSize, sf::Vector2f(i*sectorSize, j*sectorSize)); // push position too
+			allSectors[i].emplace_back(sectorSize, sf::Vector2f(i * sectorSize, j * sectorSize)); // Emplace new Sector directly
 			std::cout << "Created new sector at position (" << i * sectorSize << ", " << j * sectorSize << ")" << std::endl;
-
 		}
 	}
 
@@ -99,11 +98,11 @@ void Map::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor)
 
 	// display all connections
 	for (size_t i = 0; i < stars.size(); ++i) {
-		stars[i]->DrawAllConnections(win);
+		stars.get(i).DrawAllConnections(win);
 	}
 	// display all Stars
 	for (size_t i = 0; i < stars.size(); ++i) {
-		stars[i]->Display(win, shader, zoomFactor);
+		stars.get(i).Display(win, shader, zoomFactor);
 	}
 	// draw all ships
 
@@ -114,44 +113,49 @@ void Map::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor)
 
 }
 
+// rewrite this funciton into select ship and select star
 void Map::selectObject(VariantType obj)
 {
-	selectedObjects.push_back(obj);
+	//selectedObjects.insert(obj);
+
 }
 
-bool Map::checkIfObjectSelected(VariantType obj, bool del)
-{
-	for (size_t j = 0; j < selectedObjects.size(); ++j) {
-		// if this ship, star or other object is present in this array ( passed as argument ), then remove it and return true;
-		if (obj == selectedObjects[j]) {
-			// delete object while iterating if del is true;
-			if (del) {
-				selectedObjects.erase(std::remove(selectedObjects.begin(), selectedObjects.end(), obj), selectedObjects.end());
-			}
-			return true;
-		}
-	}
-	return false;
-}
+//bool Map::checkIfObjectSelected(VariantType obj, bool del)
+//{
+//	return false;
+//	for (size_t j = 0; j < 4; ++j) { // *==============================================!
+//		// if this ship, star or other object is present in this array ( passed as argument ), then remove it and return true;
+//		if (true) { // obj == selectedObjects[j]
+//			// delete object while iterating if del is true;
+//			if (del) {
+//				//selectedObjects.erase(std::remove(selectedObjects.begin(), selectedObjects.end(), obj), selectedObjects.end());
+//			}
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
-void Map::addStar(StarSystem* star)
+void Map::addStar(StarSystem star)
 {
-	stars.push_back(star);
-	selectableObjects.push_back(star);
+	
+	stars.insert(star_id_count, star);
+	star_id_count += 1;
+	//selectableObjects.push_back(star);
 	// determine sector, when added
 
 
 }
 
 // typed functions????????
-void Map::selectStar(StarSystem* star)
+void Map::selectStar(int star_id)
 {
-	selectedStars.push_back(star);
+	selectedStars.insert(star_id, star_id);
 }
 
-void Map::selectShip(SpaceShip* ship)
+void Map::selectShip(int ship_id)
 {
-	selectedShips.push_back(ship);
+	selectedShips.insert(ship_id, ship_id);
 	
 }
 
@@ -162,24 +166,27 @@ void Map::cleanSelection() {
 
 	selectedShips.clear();
 	selectedStars.clear();
-	selectedObjects.clear();
+	//selectedObjects.clear(); #todo
 }
 
-void Map::addShip(SpaceShip* ship)
+void Map::addShip(SpaceShip ship)
 {
 	// get all ship size and on this make id
 	//ship->id = newAllShips.size();
 
-	newAllShips.insert(ship->id, ship);
-	newAllShips.print();
+	//newAllShips.insert(ship.id, ship);
+	//newAllShips.print();
 
-	allShips.push_back(ship);
-	selectableObjects.push_back(ship);
-	std::cout << "Added ship into variant array: " << ship << std::endl;
+	allShips.insert(ship_id_count, ship);
+	ship_id_count += 1;
+	//selectableObjects.push_back(ship);
+	//std::cout << "Added ship into variant array: " << ship << std::endl;
 }
 
-void Map::destroyShip(SpaceShip* ship)
+void Map::destroyShip(int ship_id)
 {
+
+
 }
 
 //std::vector<VariantType> Map::checkColisionForAllShips()
@@ -195,12 +202,14 @@ void Map::destroyShip(SpaceShip* ship)
 
 void Map::printSectors()
 {
-	std::cout << "This is one of the sectors" << allSectors[3][2] << std::endl;
+	//std::cout << "This is one of the sectors" << allSectors[3][2] << std::endl;
+	std::cout << "This function, should print sector, but func is changed and function is not working" << std::endl;
 }
 
 void Map::determineSectorsForObjects()
 {
 
+	/*
 	for (size_t i = 0; i < selectableObjects.size(); ++i)
 	{
 		int xSector;
@@ -253,24 +262,27 @@ void Map::determineSectorsForObjects()
 
 		}
 
-	}
+	}*/
 }
 
-std::tuple<bool, SpaceShip*> Map::collisionBetweenSectors(SpaceShip* ship, Sector* s)
+std::tuple<bool, int> Map::collisionBetweenSectors(int ship_id, int sector_id)
 {
-	for (size_t j = 0; j < s->sectorShips.size(); j++)
-	{
+
+	// ooou I need DynamicSparseSet!!!
+	//for (size_t j = 0; j < s->sectorShips.size(); ++j)
+	//{
 		// collision between ships close sectors
-		if (ship->ColisionCheck(s->sectorShips[j])) {
+		/*if (ship->ColisionCheck(s->sectorShips[j])) {
 			return std::make_tuple(true, ship);
-		}
-	}
-
-	return std::make_tuple(false, nullptr);
+		}*/
+	//}
+	
+	// if return -1 - did not found an id
+	return std::make_tuple(false, -1);
 }
 
-void Map::removeShip(SpaceShip* ship)
-{
+//void Map::removeShip(SpaceShip* ship)
+//{
 	
 	// deleting ship from vector all ships
 	// all.erase(std::remove(.begin(), .end(), ship), .end());
@@ -288,8 +300,8 @@ void Map::removeShip(SpaceShip* ship)
 	//allShips.erase(std::remove(allShips.begin(), allShips.end(), ship->id), allShips.end()); // this line is a problem
 
 	//// deleting ship
-	delete ship;
+	//delete ship;
 
 
-}
+//}
 

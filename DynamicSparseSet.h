@@ -9,13 +9,14 @@ class DynamicSparseSet
 public:
 	DynamicSparseSet() = default;
 	
-	void insert(int id, const T& value);
+	void insert(int id, T& value);
+    //void insert(int id, const T value);
 	void erase(int id);
-	bool contains(int id) const;
-	const T& get(int id) const;
-	const std::vector<T>& getElements() const;
-	void print() const;
-    const int size() const;
+	bool contains(int id);
+	T& get(int id);
+	const std::vector<T>& getElements();
+	void print();
+    int size();
     void clear();
 
 
@@ -29,9 +30,9 @@ private:
 };
 
 
-// -
+// - STORING pointers/references
 template<typename T>
-void DynamicSparseSet<T>::insert(int id, const T& value)
+void DynamicSparseSet<T>::insert(int id, T& value)
 {
     ensureCapacity(id); // Ensure sparse array can accommodate the ID
     if (contains(id)) return; // Ignore duplicates
@@ -39,6 +40,18 @@ void DynamicSparseSet<T>::insert(int id, const T& value)
     dense.push_back(value);       // Add the ID to the dense array
     ids.push_back(id);
 }
+
+// this part of object is type function overload, so I can store objects, or pointers to an objects in DynamicSparseSet
+// storing objects
+//template<typename T>
+//inline void DynamicSparseSet<T>::insert(int id, const T value)
+//{
+//    ensureCapacity(id); // Ensure sparse array can accommodate the ID
+//    if (contains(id)) return; // Ignore duplicates
+//    sparse[id] = dense.size(); // Map sparse[id] to position in dense array
+//    dense.push_back(value);       // Add the ID to the dense array
+//    ids.push_back(id);
+//}
 
 template<typename T>
 void DynamicSparseSet<T>::erase(int id)
@@ -54,26 +67,26 @@ void DynamicSparseSet<T>::erase(int id)
 }
 
 template<typename T>
-bool DynamicSparseSet<T>::contains(int id) const
+bool DynamicSparseSet<T>::contains(int id)
 {
     return id < sparse.size() && sparse[id] != -1;
 }
 
 template<typename T>
-const T& DynamicSparseSet<T>::get(int id) const
+T& DynamicSparseSet<T>::get(int id)
 {
     assert(contains(id) && "ID not in the set");
     return dense[sparse[id]];
 }
 
 template<typename T>
-const std::vector<T>& DynamicSparseSet<T>::getElements() const
+const std::vector<T>& DynamicSparseSet<T>::getElements()
 {
     return dense;
 }
 
 template<typename T>
-void DynamicSparseSet<T>::print() const
+void DynamicSparseSet<T>::print()
 {
     std::cout << "Dense: ";
     for (T id : dense) {
@@ -91,7 +104,7 @@ void DynamicSparseSet<T>::ensureCapacity(int id)
 }
 
 template<typename T>
-const int DynamicSparseSet<T>::size() const {
+int DynamicSparseSet<T>::size() {
     return dense.size();
 }
 

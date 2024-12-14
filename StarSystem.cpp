@@ -1,7 +1,9 @@
 #include "StarSystem.h"
 #include "SpaceShip.h"
+#include "DynamicSparseSet.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
 
 StarSystem::StarSystem(int starXposMap, int starYposMap, float radius, sf::Color starColor, std::string name)
     :starXposMap(starXposMap), starYposMap(starYposMap), radius(radius), starColor(starColor), name(name)

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "SpaceShip.h"
+#include "DynamicSparseSet.h"
 
 class SpaceShip;
 
@@ -12,9 +13,13 @@ public:
 	~StarSystem();
 	int starXposMap;
 	int starYposMap;
+	int id = 0;
 	float radius;
 	// connections array
+	// I think it would be a graph
 	std::vector<StarSystem*> connections;
+
+	
 
 	std::string name;
 	sf::Color starColor;
