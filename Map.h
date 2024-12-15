@@ -13,9 +13,10 @@
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
 
+// sector would become QuadTree
 class Sector {
 public:
-	int sector_id = 0;
+	int id = 0;
 	sf::Vector2f position;
 	float witdth;
 	float height;
@@ -71,7 +72,7 @@ public:
 	//DynamicSparseSet<SpaceShip*> newAllShips;
 
 
-	std::vector <std::vector<Sector>> allSectors; // this data type... Should I even consider vector?
+	DynamicSparseSet<DynamicSparseSet<Sector>> allSectors; // this data type... Should I even consider vector?
 	//std::vector <Sector*> activeSectors; // this
 	std::vector <int> shipsSectors; // this needs to be changed
 	std::vector <int> starsSectors; 
@@ -82,7 +83,8 @@ public:
 	~Map();
 	void Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor);
 	
-	void selectObject(VariantType obj);
+	//void selectObject(VariantType obj);
+	void selectObject(int id, std::string type);
 	bool checkIfObjectSelected(VariantType obj, bool del=false);
 
 	void addStar(StarSystem star);

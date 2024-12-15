@@ -303,9 +303,90 @@ int main()
                 sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view); 
 
                 bool disable_star_selection = false;
-                StarSystem* storageStar;
                 // selection with control
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                    // inside selected?
+                    // loop throw sheeps and check, if I selected a one
+                    for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
+                    {
+                        
+                        if (mapGameObject.allShips.get(i).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
+                        // select
+                            int ship_id = mapGameObject.allShips.get(i).id;
 
+                            if (mapGameObject.selectedShips.contains(ship_id)) {
+                                mapGameObject.selectedShips.erase(ship_id);
+                                std::cout << "DELTED SHIP WITH CTRL" << std::endl;
+                                break;
+                            }
+                            else {
+                                mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
+                                std::cout << "ADDED SHIP WITH CTRL" << std::endl;
+                                break;
+                            }
+                            // inside selected == true?
+                            
+                            break;
+                        }
+
+                    }
+                    for (size_t i = 0; i < mapGameObject.stars.size(); i++)
+                    {
+                        if (mapGameObject.stars.get(i).star.getGlobalBounds().contains(mouseWorldPos)) {
+                            // select
+                            int star_id = mapGameObject.stars.get(i).id;
+
+                            if (mapGameObject.selectedStars.contains(star_id)) {
+                                mapGameObject.selectedStars.erase(star_id);
+                                std::cout << "DELTED STAR WITH CTRL" << std::endl;
+                                break;
+                            }
+                            else {
+                                mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
+                                std::cout << "ADDED STAR WITH CTRL" << std::endl;
+
+                                break;
+                            }
+                            // inside selected == true?
+
+                        }
+
+                    }
+
+
+                    // loop throw stars and check if I selected a one (in sectors)
+                }
+                else {
+                    mapGameObject.cleanSelection();
+                    for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
+                    {
+                        if (mapGameObject.allShips.get(i).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
+                            // select
+                            int ship_id = mapGameObject.allShips.get(i).id;
+                            mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
+                               
+                            // inside selected == true?
+                            std::cout << "SELECTED SHIP AND CLEARED SELECTION" << std::endl;
+
+                            break;
+                        }
+
+                    }
+                    for (size_t i = 0; i < mapGameObject.stars.size(); i++)
+                    {
+                        if (mapGameObject.stars.get(i).star.getGlobalBounds().contains(mouseWorldPos)) {
+                            // select
+                            int star_id = mapGameObject.stars.get(i).id;
+                            mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
+                            std::cout << "SELECTED STAR AND CLEARED SELECTION" << std::endl;
+
+                            break;
+                            // inside selected == true?
+
+                        }
+
+                    }
+                }
                 /*
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     bool inSideSelected = false;
@@ -457,24 +538,36 @@ int main()
                     // I need dictionary of all ship objects -> it will 
                     // all object selection
                     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    /*for (size_t i = 0; i < mapGameObject.selectedObjects.size(); ++i) {
-                        //mapGameObject.selectedObjects[i]->setNewTarget(mouseWorldPos);
-                        
-                        if (std::holds_alternative<SpaceShip*>(mapGameObject.selectedObjects[i])) {
-                            SpaceShip* ship = std::get<SpaceShip*>(mapGameObject.selectedObjects[i]);
+                    //! 
                     
-                            if (!ship->inMotion) {
-                            mapGameObject.movingShips.push_back(ship);
+                    
 
-                            }
-
-
-                            ship->setNewTarget(mouseWorldPos);
-                            
+                    // that is how I can iterate throw selectedShips
+                    for (const auto& elem : mapGameObject.selectedShips.getElements())
+                    {
+                        int ship_id = mapGameObject.selectedShips.get(elem);
+                        if (!mapGameObject.allShips.get(elem).inMotion) {
+                            mapGameObject.movingShips.insert(ship_id, ship_id);
+                            std::cout << "Inserted ship into moving objects" << std::endl;
                         }
+                        std::cout << "Set new target for selected ship" << std::endl;
+                        mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
+                    }
+
+                    //for (size_t i = 0; i < mapGameObject.selectedShips.size(); ++i) {
+                    //    //mapGameObject.selectedObjects[i]->setNewTarget(mouseWorldPos);
+                    //    int ship_id = mapGameObject.selectedShips.get(i);
+                    //    if (!mapGameObject.allShips.get(i).inMotion) {
+                    //        mapGameObject.movingShips.insert(ship_id, ship_id);
+
+                    //    }
+                    //    std::cout << "Set new target for selected ship" << std::endl;
+                    //    mapGameObject.allShips.get(i).setNewTarget(mouseWorldPos);
+                    //        
+                    //    
 
 
-                    }*/
+                    //}
                     //rocket.setNewTarget(mouseWorldPos); =============================================================
 
                     
@@ -482,7 +575,7 @@ int main()
             }
 
             // logic of zooming
-            // #todo add maximum zooming and minimum zooming
+            // #todo add maximum zooming and minimum zooming (done)
             if (event.type == sf::Event::MouseWheelScrolled) 
             {
                 if (event.mouseWheelScroll.delta > 0) { 
@@ -545,6 +638,27 @@ int main()
 
         // check collision inside this loop
        
+        // possibly broken iteration     
+        // 
+        // Retrieve the dense vector of selected ships
+        auto& movingShips = mapGameObject.movingShips.getElements();
+
+        for (size_t i = 0; i < mapGameObject.movingShips.size(); ++i)
+        {
+            const auto& elem = movingShips[i];
+            int ship_id = mapGameObject.movingShips.get(elem);
+
+            int sectorX = (mapGameObject.allShips.get(elem).pos.x) / mapGameObject.sectorSize;
+            int sectorY = (mapGameObject.allShips.get(elem).pos.y) / mapGameObject.sectorSize;
+
+
+
+            mapGameObject.allShips.get(elem).Move(deltaTime);
+            if (!mapGameObject.allShips.get(elem).inMotion) {
+                mapGameObject.movingShips.erase(elem);
+                break;
+            }
+        }
 
         //for (size_t i = 0; i < mapGameObject.movingShips.size(); i++)
         //{

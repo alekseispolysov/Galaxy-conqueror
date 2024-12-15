@@ -14,13 +14,10 @@ public:
 	void erase(int id);
 	bool contains(int id);
 	T& get(int id);
-	const std::vector<T>& getElements();
+	const std::vector<T>& getElements() const; // rewrite this
 	void print();
     int size();
     void clear();
-
-
-
 
 private:
 	std::vector<int> sparse;  // Sparse array: maps IDs to positions in dense
@@ -41,17 +38,6 @@ void DynamicSparseSet<T>::insert(int id, T& value)
     ids.push_back(id);
 }
 
-// this part of object is type function overload, so I can store objects, or pointers to an objects in DynamicSparseSet
-// storing objects
-//template<typename T>
-//inline void DynamicSparseSet<T>::insert(int id, const T value)
-//{
-//    ensureCapacity(id); // Ensure sparse array can accommodate the ID
-//    if (contains(id)) return; // Ignore duplicates
-//    sparse[id] = dense.size(); // Map sparse[id] to position in dense array
-//    dense.push_back(value);       // Add the ID to the dense array
-//    ids.push_back(id);
-//}
 
 template<typename T>
 void DynamicSparseSet<T>::erase(int id)
@@ -80,7 +66,7 @@ T& DynamicSparseSet<T>::get(int id)
 }
 
 template<typename T>
-const std::vector<T>& DynamicSparseSet<T>::getElements()
+const std::vector<T>& DynamicSparseSet<T>::getElements() const
 {
     return dense;
 }
