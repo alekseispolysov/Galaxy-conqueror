@@ -13,6 +13,14 @@
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
 
+// boundary class to represent rectangle region
+class SectorBoundary {
+public:
+
+
+};
+
+
 // sector would become QuadTree
 class Sector {
 public:

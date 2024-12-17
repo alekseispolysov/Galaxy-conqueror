@@ -151,6 +151,7 @@ void Map::addStar(StarSystem star)
 {
 	
 	std::cout << "Added star with star id: " << star_id_count << std::endl;
+	// redo this part of code, star Id either should be created independently, or otherwise
 	star.id = star_id_count;
 	stars.insert(star_id_count, star);
 	
@@ -191,7 +192,7 @@ void Map::addShip(SpaceShip ship)
 	//newAllShips.insert(ship.id, ship);
 	//newAllShips.print();
 
-	allShips.insert(ship_id_count, ship);
+	allShips.insert(ship.id, ship);
 	ship_id_count += 1;
 	//selectableObjects.push_back(ship);
 	//std::cout << "Added ship into variant array: " << ship << std::endl;

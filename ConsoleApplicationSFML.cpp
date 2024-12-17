@@ -144,9 +144,9 @@ int main()
         sf::Vertex(sf::Vector2f(0,0), sf::Color::Magenta),
     };
 
-    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture, 1);
-    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture, 2);
-    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture, 3);
+    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture, 0);
+    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture, 1);
+    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture, 2);
 
 
     //
@@ -316,12 +316,12 @@ int main()
 
                             if (mapGameObject.selectedShips.contains(ship_id)) {
                                 mapGameObject.selectedShips.erase(ship_id);
-                                std::cout << "DELTED SHIP WITH CTRL" << std::endl;
+                                std::cout << "DELTED SHIP WITH CTRL, SHIP ID: " << ship_id << std::endl;
                                 break;
                             }
                             else {
                                 mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
-                                std::cout << "ADDED SHIP WITH CTRL" << std::endl;
+                                std::cout << "ADDED SHIP WITH CTRL, SHIP ID: " << ship_id<< std::endl;
                                 break;
                             }
                             // inside selected == true?
@@ -338,12 +338,12 @@ int main()
 
                             if (mapGameObject.selectedStars.contains(star_id)) {
                                 mapGameObject.selectedStars.erase(star_id);
-                                std::cout << "DELTED STAR WITH CTRL" << std::endl;
+                                std::cout << "DELTED STAR WITH CTRL, STAR_ID: " << star_id << std::endl;
                                 break;
                             }
                             else {
                                 mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
-                                std::cout << "ADDED STAR WITH CTRL" << std::endl;
+                                std::cout << "ADDED STAR WITH CTRL, STAR_ID: " << star_id << std::endl;
 
                                 break;
                             }
@@ -366,7 +366,7 @@ int main()
                             mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
                                
                             // inside selected == true?
-                            std::cout << "SELECTED SHIP AND CLEARED SELECTION" << std::endl;
+                            std::cout << "SELECTED SHIP AND CLEARED SELECTION, SHIP_ID: " << ship_id << std::endl;
 
                             break;
                         }
@@ -378,7 +378,7 @@ int main()
                             // select
                             int star_id = mapGameObject.stars.get(i).id;
                             mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
-                            std::cout << "SELECTED STAR AND CLEARED SELECTION" << std::endl;
+                            std::cout << "SELECTED STAR AND CLEARED SELECTION, STAR_ID: " << star_id << std::endl;
 
                             break;
                             // inside selected == true?
@@ -548,9 +548,9 @@ int main()
                         int ship_id = mapGameObject.selectedShips.get(elem);
                         if (!mapGameObject.allShips.get(elem).inMotion) {
                             mapGameObject.movingShips.insert(ship_id, ship_id);
-                            std::cout << "Inserted ship into moving objects" << std::endl;
+                            std::cout << "Inserted ship into moving objects, ship id: " << ship_id << std::endl;
                         }
-                        std::cout << "Set new target for selected ship" << std::endl;
+                        std::cout << "Set new target for selected ship, ship id: " << ship_id << std::endl;
                         mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
                     }
 
@@ -646,7 +646,9 @@ int main()
         for (size_t i = 0; i < mapGameObject.movingShips.size(); ++i)
         {
             const auto& elem = movingShips[i];
+            std::cout << "Current element in moving ships: " << elem << std::endl;
             int ship_id = mapGameObject.movingShips.get(elem);
+            std::cout << "Got the ship id: " << ship_id << std::endl;
 
             int sectorX = (mapGameObject.allShips.get(elem).pos.x) / mapGameObject.sectorSize;
             int sectorY = (mapGameObject.allShips.get(elem).pos.y) / mapGameObject.sectorSize;
