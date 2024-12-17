@@ -16,12 +16,20 @@ using VariantType = std::variant<SpaceShip*, StarSystem*>;
 // boundary class to represent rectangle region
 class SectorBoundary {
 public:
+	float x, y;
+	// since boundary is rectangle, we will not use size
+	int boundary_size;
 
+	SectorBoundary(float x, float y, int boundary_size);
+	~SectorBoundary();
 
+	// check, if rectangle, contains point
+	bool contains(sf::Vector2f point);
+	bool intersects(); // ideally object itself
 };
 
 
-// sector would become QuadTree
+// sector is quad tree
 class Sector {
 public:
 	int id = 0;
@@ -30,9 +38,17 @@ public:
 	float height;
 	int sector_size;
 	sf::RectangleShape sectorRect;
-	DynamicSparseSet <int> sectorStars;// this needs to be changed
-	DynamicSparseSet <int> sectorShips;// this needs to be changed
 	
+	DynamicSparseSet <int> sectorStars;
+	DynamicSparseSet <int> sectorShips; 
+	
+
+	bool devided;
+	int capacity;
+	int maxDepth;
+	// child nodes:
+	std::shared_ptr<Sector> northEast, northWest, southEast, southWest;
+
 
 	sf::Vertex sectorBorder[8];
 
@@ -41,6 +57,8 @@ public:
 	~Sector();
 	//std::vector <VariantType> checkColisionInSector();
 	void displaySector(sf::RenderWindow& win);
+	void subdivide();
+
 
 private:
 

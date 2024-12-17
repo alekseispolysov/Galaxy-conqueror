@@ -10,6 +10,17 @@
 #include <cassert>
 
 
+SectorBoundary::SectorBoundary(float x, float y, int boundary_size) : x(x), y(y), boundary_size(boundary_size){}
+
+bool SectorBoundary::contains(sf::Vector2f point)
+{
+	return (point.x >= (x - boundary_size) && point.x <= (x + boundary_size) &&
+		point.y >= (y - boundary_size) && point.y <= (y + boundary_size));
+}
+
+
+
+
 
 Sector::Sector(int sectorSize, sf::Vector2f position):sector_size(sectorSize),position(position)
 {
