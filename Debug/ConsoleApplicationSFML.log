@@ -1,62 +1,62 @@
 ﻿  ConsoleApplicationSFML.cpp
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:             T=unsigned int
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         and
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,151): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:             T=unsigned int
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         and
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,131): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,74): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,74): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,74): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,74): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,74): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,33): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,33): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,33): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,33): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(39,33): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(157,26): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(310,42): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(333,42): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(361,42): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(375,42): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(646,30): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(653,25): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(653,25): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(653,25): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(653,25): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(653,25): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(654,25): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(654,25): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(654,25): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(654,25): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(654,25): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(988,30): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(179,11): warning C4101: time_weeks: неиспользованная локальная переменная
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(180,11): warning C4101: time_months: неиспользованная локальная переменная
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(181,11): warning C4101: time_years: неиспользованная локальная переменная
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(178,11): warning C4101: time_days: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,151): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,131): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,74): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,74): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,74): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,74): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,74): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,33): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,33): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,33): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,33): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(41,33): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(160,26): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(320,42): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(344,42): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(374,42): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(390,42): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(662,30): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(669,25): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(669,25): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(669,25): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(669,25): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(669,25): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(1004,30): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(188,11): warning C4101: time_weeks: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(189,11): warning C4101: time_months: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(190,11): warning C4101: time_years: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(187,11): warning C4101: time_days: неиспользованная локальная переменная
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(58,15): warning C4018: <: несоответствие типов со знаком и без знака
   (компиляция исходного файла "ConsoleApplicationSFML.cpp")
       C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(58,15):
       контекст создания экземпляра шаблона (сначала самый старый)
-          C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.h(42,25):
+          C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.h(54,25):
           выполняется компиляция ссылки на экземпляр класс шаблон функции "DynamicSparseSet<int>"
           C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(57,1):
           во время компиляции функции-члена класс шаблон "bool DynamicSparseSet<int>::contains(int)"
-              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(317,29):
+              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(328,29):
               см. первую ссылку на DynamicSparseSet<int>::contains "main"
   
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(87,12): warning C4018: >=: несоответствие типов со знаком и без знака
@@ -69,43 +69,43 @@ C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Dyna
           [
               T=int
           ]
-              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(550,61):
+              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(566,61):
               см. первую ссылку на DynamicSparseSet<int>::insert "main"
           C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(86,1):
           во время компиляции функции-члена класс шаблон "void DynamicSparseSet<int>::ensureCapacity(int)"
   
   Map.cpp
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,64): warning C4244: аргумент: преобразование "size_t" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,64): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,64): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,64): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,64): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,49): warning C4244: аргумент: преобразование "size_t" в "T", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,49): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,49): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,49): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(87,49): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(116,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(120,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(241,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(243,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(243,15): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(243,15): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(243,15): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(243,15): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(244,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(244,15): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(244,15): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(244,15): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(244,15): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(253,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(238,6): warning C4101: ySector: неиспользованная локальная переменная
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(237,6): warning C4101: xSector: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,64): warning C4244: аргумент: преобразование "size_t" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,64): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,64): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,64): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,64): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,49): warning C4244: аргумент: преобразование "size_t" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,49): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,49): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,49): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(145,49): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(174,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(179,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(305,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(307,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(307,15): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(307,15): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(307,15): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(307,15): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(308,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(308,15): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(308,15): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(308,15): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(308,15): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(317,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(302,6): warning C4101: ySector: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(301,6): warning C4101: xSector: неиспользованная локальная переменная
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(58,15): warning C4018: <: несоответствие типов со знаком и без знака
   (компиляция исходного файла "Map.cpp")
       C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(58,15):
       контекст создания экземпляра шаблона (сначала самый старый)
-          C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.h(42,25):
+          C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.h(54,25):
           выполняется компиляция ссылки на экземпляр класс шаблон функции "DynamicSparseSet<int>"
           C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(33,1):
           во время компиляции функции-члена класс шаблон "void DynamicSparseSet<int>::insert(int,T &)"
@@ -113,7 +113,7 @@ C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Dyna
           [
               T=int
           ]
-              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(136,23):
+              C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(196,23):
               см. первую ссылку на DynamicSparseSet<int>::insert "Map::selectObject"
           C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(57,1):
           во время компиляции функции-члена класс шаблон "bool DynamicSparseSet<int>::contains(int)"
@@ -125,5 +125,75 @@ C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Dyna
           C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(86,1):
           во время компиляции функции-члена класс шаблон "void DynamicSparseSet<int>::ensureCapacity(int)"
   
+  SpaceShip.cpp
+  StarSystem.cpp
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,108): warning C4244: аргумент: преобразование "float" в "sf::Uint8", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,45): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,45): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,45): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,45): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,45): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,33): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,33): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,33): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,33): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(66,33): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,218): warning C4244: аргумент: преобразование "float" в "sf::Uint8", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,87): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,87): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,87): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,87): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,87): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,53): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,53): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,53): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,53): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(67,53): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,69): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(107,104): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,70): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,70): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,70): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,70): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,70): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,51): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,51): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,51): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,51): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(113,51): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,64): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:             T=unsigned int
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         and
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\StarSystem.cpp(119,55): warning C4244:         ]
   Создание кода...
   ConsoleApplicationSFML.vcxproj -> C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\Debug\ConsoleApplicationSFML.exe

@@ -8,6 +8,9 @@
 #include <tuple>
 #include "DynamicSparseSet.h"
 #include <cassert>
+#include <unordered_map>
+#include <cmath>
+#include <utility>  // For std::pair
 
 
 SectorBoundary::SectorBoundary(float x, float y, int boundary_size) : x(x), y(y), boundary_size(boundary_size){}
@@ -55,6 +58,61 @@ void Sector::displaySector(sf::RenderWindow& win)
 
 
 
+// hash map functionality
+std::pair<int, int> Map::getCell(const sf::Vector2f position)
+{
+	int gridX = static_cast<int>(std::floor(position.x / cellSize));
+	int gridY = static_cast<int>(std::floor(position.y / cellSize));
+	return std::make_pair(gridX, gridY);
+}
+
+void Map::insertIntoHashMap(int objectID, sf::Vector2f position)
+{
+	std::pair<int, int> cell = getCell(position);
+	grid[cell].push_back(objectID);
+}
+
+void Map::removeFromHashMap(int objectID, sf::Vector2f position)
+{
+	std::pair<int, int> cell = getCell(position);
+	std::vector<int>& cellObjects = grid[cell];
+	cellObjects.erase(std::remove(cellObjects.begin(), cellObjects.end(), objectID), cellObjects.end());
+}
+
+// get nearby objects
+std::vector<int> Map::queryHashMap(sf::Vector2f position, float radius)
+{
+	std::vector<int> nearbyObjects;
+
+	//
+	int minX = static_cast<int>(std::floor((position.x - radius) / cellSize)); 
+	int maxX = static_cast<int>(std::floor((position.x + radius) / cellSize)); 
+	int minY = static_cast<int>(std::floor((position.y - radius) / cellSize)); 
+	int maxY = static_cast<int>(std::floor((position.y + radius) / cellSize));
+	
+	for (int x = minX; x <= maxX; ++x) {
+		for (int y = minY; y <= maxY; ++y) {
+			std::pair<int, int> cell = std::make_pair(x, y);
+			if (grid.find(cell) != grid.end()) {
+				for (size_t i = 0; i < grid[cell].size(); ++i) {
+					nearbyObjects.push_back(grid[cell][i]);
+				}
+			}
+		}
+	}
+
+	return nearbyObjects;
+}
+
+void Map::clearHashMap()
+{
+	grid.clear();
+}
+
+void Map::drawGrid()
+{
+
+}
 
 Map::Map(sf::Vector2f mapSize):mapSize(mapSize){
 	
@@ -114,11 +172,13 @@ void Map::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor)
 
 	// display all connections
 	for (size_t i = 0; i < stars.size(); ++i) {
-		stars.get(i).DrawAllConnections(win);
+		int star_id = stars.getElements()[i].id;
+		stars.get(star_id).DrawAllConnections(win);
 	}
 	// display all Stars
 	for (size_t i = 0; i < stars.size(); ++i) {
-		stars.get(i).Display(win, shader, zoomFactor);
+		int star_id = stars.getElements()[i].id;
+		stars.get(star_id).Display(win, shader, zoomFactor);
 	}
 	// draw all ships
 
@@ -161,11 +221,12 @@ void Map::selectObject(int id, std::string type)
 void Map::addStar(StarSystem star)
 {
 	
-	std::cout << "Added star with star id: " << star_id_count << std::endl;
+	std::cout << "Added star with star id: " << unique_object_id << std::endl;
 	// redo this part of code, star Id either should be created independently, or otherwise
-	star.id = star_id_count;
-	stars.insert(star_id_count, star);
 	
+	star.id = unique_object_id;
+	stars.insert(unique_object_id, star);
+	unique_object_id += 1;
 	star_id_count += 1;
 	//selectableObjects.push_back(star);
 	// determine sector, when added
@@ -203,6 +264,9 @@ void Map::addShip(SpaceShip ship)
 	//newAllShips.insert(ship.id, ship);
 	//newAllShips.print();
 
+	ship.id = unique_object_id;
+	unique_object_id += 1;
+	std::cout << "inserting ship, id of the ship: " << ship.id << std::endl;
 	allShips.insert(ship.id, ship);
 	ship_id_count += 1;
 	//selectableObjects.push_back(ship);
@@ -367,4 +431,10 @@ std::tuple<bool, int> Map::collisionBetweenSectors(int ship_id, int sector_id)
 
 
 //}
+
+size_t PairHash::operator()(const std::pair<int, int>& p) const
+{
+	return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+}
+
 

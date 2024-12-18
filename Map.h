@@ -7,11 +7,23 @@
 #include <tuple>
 #include "DynamicSparseSet.h"
 #include <cassert>
+#include <unordered_map>
+#include <cmath>
+#include <utility>  // For std::pair
 
 //class DynamicSparseSet;
 
 //define vairants for dynamic arrays
 using VariantType = std::variant<SpaceShip*, StarSystem*>;
+
+
+
+
+class PairHash {
+public:
+	size_t operator()(const std::pair<int, int>& p) const;
+};
+
 
 // boundary class to represent rectangle region
 class SectorBoundary {
@@ -43,11 +55,7 @@ public:
 	DynamicSparseSet <int> sectorShips; 
 	
 
-	bool devided;
-	int capacity;
-	int maxDepth;
 	// child nodes:
-	std::shared_ptr<Sector> northEast, northWest, southEast, southWest;
 
 
 	sf::Vertex sectorBorder[8];
@@ -67,8 +75,23 @@ private:
 //   ===========================================================================================================
 class Map
 {
+private:
+
+	// spatial hashing functionality
+	float cellSize = 1.0f;
+	std::unordered_map<std::pair<int, int>, std::vector<int>, PairHash> grid;
+	std::pair<int, int> getCell(const sf::Vector2f position);
+
 public:
+	// spatial hashing functionality
+	void insertIntoHashMap(int objectID, sf::Vector2f position);
+	void removeFromHashMap(int objectID, sf::Vector2f position);
+	std::vector<int> queryHashMap(sf::Vector2f position, float radius);
+	void clearHashMap();
+	void drawGrid();
+
 	// ids
+	int unique_object_id = 0;
 	int star_id_count = 0;
 	int ship_id_count = 0;
 	int sector_id_count = 0;
@@ -99,6 +122,9 @@ public:
 
 
 	DynamicSparseSet<DynamicSparseSet<Sector>> allSectors; // this data type... Should I even consider vector?
+	// I DONT NEED TO USE SECTORS, when I am using hash map!
+
+
 	//std::vector <Sector*> activeSectors; // this
 	std::vector <int> shipsSectors; // this needs to be changed
 	std::vector <int> starsSectors; 
@@ -127,7 +153,6 @@ public:
 
 
 
-private:
 
 };
 

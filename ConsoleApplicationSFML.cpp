@@ -11,7 +11,9 @@
 #include "StarSystem.h"
 #include "Map.h"
 #include "SpaceShip.h"
-
+#include <unordered_map>
+#include <cmath>
+#include <utility>  // For std::pair
 
 
 
@@ -144,9 +146,9 @@ int main()
         sf::Vertex(sf::Vector2f(0,0), sf::Color::Magenta),
     };
 
-    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture, 0);
-    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture, 1);
-    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture, 2);
+    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture);
+    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture);
+    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture);
 
 
     //
@@ -154,12 +156,19 @@ int main()
     mapGameObject.addShip(superShip);
     mapGameObject.addShip(newShip);
 
+    std::cout << "Can go far there" << std::endl;
     for (size_t i = 0; i < mapGameObject.allShips.size(); ++i)
     {
-        mapGameObject.allShips.get(i).Display(window);
-    }
+        // get id of the ship
 
-    mapGameObject.determineSectorsForObjects();
+        int ship_id = mapGameObject.allShips.getElements()[i].id;
+        // when got id, then use it as it should be used
+        std::cout << "err not happend yet" << std::endl;
+        mapGameObject.allShips.get(ship_id).Display(window);
+    }
+    // THIS IS EXAMPLE -------------------------------------------------------------
+    std::cout << "we are pass this loop" << std::endl;
+    //mapGameObject.determineSectorsForObjects();
     // define clocks
 
     sf::Clock clock; // from here impolimenting object movement
@@ -307,12 +316,14 @@ int main()
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     // inside selected?
                     // loop throw sheeps and check, if I selected a one
+                    // this will fail
                     for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
                     {
-                        
-                        if (mapGameObject.allShips.get(i).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
+                        int ship_id = mapGameObject.allShips.getElements()[i].id;
+                        //mapGameObject.allShips.get(ship_id).Display(window);
+                        if (mapGameObject.allShips.get(ship_id).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
                         // select
-                            int ship_id = mapGameObject.allShips.get(i).id;
+                            //int ship_id = mapGameObject.allShips.get(i).id;
 
                             if (mapGameObject.selectedShips.contains(ship_id)) {
                                 mapGameObject.selectedShips.erase(ship_id);
@@ -332,9 +343,10 @@ int main()
                     }
                     for (size_t i = 0; i < mapGameObject.stars.size(); i++)
                     {
+                        int star_id = mapGameObject.stars.getElements()[i].id;
                         if (mapGameObject.stars.get(i).star.getGlobalBounds().contains(mouseWorldPos)) {
                             // select
-                            int star_id = mapGameObject.stars.get(i).id;
+                            
 
                             if (mapGameObject.selectedStars.contains(star_id)) {
                                 mapGameObject.selectedStars.erase(star_id);
@@ -358,11 +370,14 @@ int main()
                 }
                 else {
                     mapGameObject.cleanSelection();
+                    // this will fail
                     for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
                     {
-                        if (mapGameObject.allShips.get(i).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
+                        int ship_id = mapGameObject.allShips.getElements()[i].id;
+
+                        if (mapGameObject.allShips.get(ship_id).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
                             // select
-                            int ship_id = mapGameObject.allShips.get(i).id;
+                            
                             mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
                                
                             // inside selected == true?
@@ -374,9 +389,10 @@ int main()
                     }
                     for (size_t i = 0; i < mapGameObject.stars.size(); i++)
                     {
-                        if (mapGameObject.stars.get(i).star.getGlobalBounds().contains(mouseWorldPos)) {
+                        int star_id = mapGameObject.stars.getElements()[i].id;
+                        if (mapGameObject.stars.get(star_id).star.getGlobalBounds().contains(mouseWorldPos)) {
                             // select
-                            int star_id = mapGameObject.stars.get(i).id;
+                            
                             mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
                             std::cout << "SELECTED STAR AND CLEARED SELECTION, STAR_ID: " << star_id << std::endl;
 
@@ -987,7 +1003,8 @@ int main()
         // error
         for (size_t i = 0; i < mapGameObject.allShips.size(); ++i)
         {
-            mapGameObject.allShips.get(i).Display(window);
+            int ship_id = mapGameObject.allShips.getElements()[i].id;
+            mapGameObject.allShips.get(ship_id).Display(window);
         }
 
         window.draw(time_text);
