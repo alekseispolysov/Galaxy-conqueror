@@ -78,17 +78,24 @@ class Map
 private:
 
 	// spatial hashing functionality
-	float cellSize = 1.0f;
+	float cellSize = 5.0f;
 	std::unordered_map<std::pair<int, int>, std::vector<int>, PairHash> grid;
 	std::pair<int, int> getCell(const sf::Vector2f position);
+	// some dynamic sparse set, to hold all active points in order to draw them
+	std::vector<sf::Vector2f> activeCells;
 
 public:
 	// spatial hashing functionality
 	void insertIntoHashMap(int objectID, sf::Vector2f position);
 	void removeFromHashMap(int objectID, sf::Vector2f position);
+
+	void visualizeHashMapFill(sf::RenderWindow& win);
+	std::vector<std::pair<int, int>> getOccupiedCells(sf::Vector2f position, sf::Vector2f size);
+	void updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition);
 	std::vector<int> queryHashMap(sf::Vector2f position, float radius);
 	void clearHashMap();
 	void drawGrid();
+	sf::Vector2f getObjectPosition(int objectID);
 
 	// ids
 	int unique_object_id = 0;

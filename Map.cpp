@@ -77,25 +77,107 @@ void Map::removeFromHashMap(int objectID, sf::Vector2f position)
 	std::pair<int, int> cell = getCell(position);
 	std::vector<int>& cellObjects = grid[cell];
 	cellObjects.erase(std::remove(cellObjects.begin(), cellObjects.end(), objectID), cellObjects.end());
+
+	if (cellObjects.empty()) {
+		grid.erase(cell);
+	}
 }
 
-// get nearby objects
-std::vector<int> Map::queryHashMap(sf::Vector2f position, float radius)
+
+void Map::visualizeHashMapFill(sf::RenderWindow& win)
 {
+	// Iterate through all the cells in the unordered map
+	for (const auto& pair : grid)
+	{
+		// Extract the grid cell coordinates
+		std::pair<int, int> cell = pair.first;
+
+		// Convert grid cell coordinates back to world position
+		sf::Vector2f worldPosition = sf::Vector2f(cell.first * cellSize, cell.second * cellSize);
+
+		// Draw a small dot for visualization
+		sf::RectangleShape rect(sf::Vector2f(cellSize, cellSize));
+		rect.setFillColor(sf::Color::Red);
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1.0f);
+		rect.setPosition(worldPosition.x, worldPosition.y);
+		win.draw(rect);
+	}
+}
+
+std::vector<std::pair<int, int>> Map::getOccupiedCells(sf::Vector2f position, sf::Vector2f size)
+{
+	 std::vector<std::pair<int, int>> occupiedCells;
+
+	 int minX = static_cast<int>(std::floor((position.x - (size.x/2)) / cellSize));
+	 int maxX = static_cast<int>(std::floor(((position.x - (size.x / 2) + size.x)) / cellSize));
+	 int minY = static_cast<int>(std::floor((position.y - (size.y / 2)) / cellSize));
+	 int maxY = static_cast<int>(std::floor(((position.y - (size.y / 2) + size.y)) / cellSize));
+
+	 for (int x = minX; x <= maxX; ++x) {
+		 for (int y = minY; y <= maxY; ++y) {
+			 occupiedCells.emplace_back(x, y);
+		 }
+	 }
+
+	 return occupiedCells;
+}
+
+void Map::updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition)
+{
+	auto oldCells = getOccupiedCells(oldPosition, allShips.get(objectID).spriteSize);
+	auto newCells = getOccupiedCells(newPosition, allShips.get(objectID).spriteSize);
+
+	if (oldCells == newCells) return; // Skip if no grid cell change.
+
+	// Remove from old cells
+	for (const auto& cell : oldCells) {
+		auto& objects = grid[cell];
+		objects.erase(std::remove(objects.begin(), objects.end(), objectID), objects.end());
+		if (objects.empty()) {
+			grid.erase(cell);
+		}
+	}
+
+	// Add to new cells
+	for (const auto& cell : newCells) {
+		grid[cell].push_back(objectID);
+	}
+}
+
+//void Map::visualizeHashMapFill(sf::RenderWindow& win)
+//{
+//	for (size_t i = 0; i < activeCells.size(); ++i)
+//	{
+//		sf::CircleShape dot(2);
+//		dot.setFillColor(sf::Color::Red);
+//		dot.setPosition(activeCells[i].x, activeCells[i].y);
+//		win.draw(dot);
+//	}
+//}
+
+// get nearby objects
+std::vector<int> Map::queryHashMap(sf::Vector2f position, float radius) {
 	std::vector<int> nearbyObjects;
 
-	//
-	int minX = static_cast<int>(std::floor((position.x - radius) / cellSize)); 
-	int maxX = static_cast<int>(std::floor((position.x + radius) / cellSize)); 
-	int minY = static_cast<int>(std::floor((position.y - radius) / cellSize)); 
+	int minX = static_cast<int>(std::floor((position.x - radius) / cellSize));
+	int maxX = static_cast<int>(std::floor((position.x + radius) / cellSize));
+	int minY = static_cast<int>(std::floor((position.y - radius) / cellSize));
 	int maxY = static_cast<int>(std::floor((position.y + radius) / cellSize));
-	
+
+	float radiusSquared = radius * radius;
+
 	for (int x = minX; x <= maxX; ++x) {
 		for (int y = minY; y <= maxY; ++y) {
 			std::pair<int, int> cell = std::make_pair(x, y);
 			if (grid.find(cell) != grid.end()) {
-				for (size_t i = 0; i < grid[cell].size(); ++i) {
-					nearbyObjects.push_back(grid[cell][i]);
+				for (const int& objectID : grid[cell]) {
+					sf::Vector2f objectPosition = getObjectPosition(objectID); // Fetch object position.
+					float distanceSquared = (position.x - objectPosition.x) * (position.x - objectPosition.x) +
+						(position.y - objectPosition.y) * (position.y - objectPosition.y);
+					if (distanceSquared <= radiusSquared) {
+						nearbyObjects.push_back(objectID);
+					}
 				}
 			}
 		}
@@ -111,6 +193,23 @@ void Map::clearHashMap()
 
 void Map::drawGrid()
 {
+
+}
+
+sf::Vector2f Map::getObjectPosition(int objectID)
+{
+	// try to access it in
+	if (allShips.contains(objectID)) {
+		return allShips.get(objectID).pos;
+	}
+	else if (stars.contains(objectID)) {
+		return sf::Vector2f(stars.get(objectID).starXposMap, stars.get(objectID).starYposMap);
+	}
+	else {
+		throw std::runtime_error("Object with this ID does not exists");
+		return sf::Vector2f(0, 0);
+	}
+
 
 }
 
@@ -181,7 +280,7 @@ void Map::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor)
 		stars.get(star_id).Display(win, shader, zoomFactor);
 	}
 	// draw all ships
-
+	visualizeHashMapFill(win);
 	// draw map Borders
 	win.draw(mapBorder, 8, sf::Lines);
 
@@ -226,8 +325,16 @@ void Map::addStar(StarSystem star)
 	
 	star.id = unique_object_id;
 	stars.insert(unique_object_id, star);
+	insertIntoHashMap(star.id, sf::Vector2f(star.starXposMap, star.starYposMap));
 	unique_object_id += 1;
 	star_id_count += 1;
+
+	// inserting ship into multiple cells
+	auto occupiedCells = getOccupiedCells(sf::Vector2f(star.starXposMap, star.starYposMap), sf::Vector2f(star.radius, star.radius));
+	for (const auto& cell : occupiedCells) {
+		grid[cell].push_back(star.id);
+	}
+
 	//selectableObjects.push_back(star);
 	// determine sector, when added
 
@@ -268,6 +375,21 @@ void Map::addShip(SpaceShip ship)
 	unique_object_id += 1;
 	std::cout << "inserting ship, id of the ship: " << ship.id << std::endl;
 	allShips.insert(ship.id, ship);
+	insertIntoHashMap(ship.id, ship.pos);
+
+	// inserting ship into multiple cells
+	auto occupiedCells = getOccupiedCells(ship.pos, ship.spriteSize);
+	for (size_t i = 0; i < occupiedCells.size(); i++)
+	{
+		//ship.currentlyOccupiedCells
+		ship.currentlyOccupiedCells.push_back(occupiedCells[i]);
+	}
+	for (const auto& cell : occupiedCells) {
+		grid[cell].push_back(ship.id);
+	}
+
+
+
 	ship_id_count += 1;
 	//selectableObjects.push_back(ship);
 	//std::cout << "Added ship into variant array: " << ship << std::endl;

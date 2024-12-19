@@ -24,7 +24,7 @@ public:
 	std::string name;
 	sf::Color starColor;
 	sf::CircleShape star;
-
+	//std::vector<std::pair<int, int>> currentlyOccupiedCells; don't think I need this
 	void Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFactor);
 	void ConnectTo(StarSystem* otherSystem);
 	void DrawAllConnections(sf::RenderWindow& win);

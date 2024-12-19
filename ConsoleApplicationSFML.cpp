@@ -670,8 +670,33 @@ int main()
             int sectorY = (mapGameObject.allShips.get(elem).pos.y) / mapGameObject.sectorSize;
 
 
+            // I need to determine object grid and then draw it inside
 
+            sf::Vector2f oldPos = mapGameObject.allShips.get(elem).pos;
+            //mapGameObject.removeFromHashMap(elem, mapGameObject.allShips.get(elem).pos);
             mapGameObject.allShips.get(elem).Move(deltaTime);
+
+            // instead of removing, update object position
+            //currentlyOccupiedCells;
+            mapGameObject.updateObjectPosition(elem, oldPos, mapGameObject.allShips.get(elem).pos);
+            
+            // this don't work as it should
+            std::vector<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 5);
+            std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
+            if (nearbyObjects.size() > 1) {
+                std::cout << "Coliding this are all nearby objects!" << std::endl;
+                for (size_t j = 0; j < nearbyObjects.size(); ++j)
+                {
+                    std::cout << "Objects: " << nearbyObjects[j] << std::endl;
+
+                }
+            }
+
+
+            // here I need to determine all object appearence in hashmap and after that with for loop insert it into hashmap
+
+
+            //mapGameObject.insertIntoHashMap(elem, mapGameObject.allShips.get(elem).pos);
             if (!mapGameObject.allShips.get(elem).inMotion) {
                 mapGameObject.movingShips.erase(elem);
                 break;

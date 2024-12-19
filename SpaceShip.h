@@ -15,6 +15,7 @@ public:
     sf::Vector2f endPos;
     sf::Vector2f direction = sf::Vector2f(0.0f, 0.0f);
     sf::Vector2f shipOrigin;
+    std::vector<std::pair<int, int>> currentlyOccupiedCells;
     float speed = 100.0f;
     int sector[2];
     int id;
