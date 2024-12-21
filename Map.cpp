@@ -157,26 +157,41 @@ void Map::updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vecto
 //}
 
 // get nearby objects
-std::vector<int> Map::queryHashMap(sf::Vector2f position, float radius) {
-	std::vector<int> nearbyObjects;
+DynamicSparseSet<int> Map::queryHashMap(sf::Vector2f position, float radius, int originID) {
+	//std::vector<int> nearbyObjects;
+	DynamicSparseSet<int> nearbyObjects;
 
+	// because it is int, thats why I am flooring, radius of how much grid cells in radius I need to detect in position
+	// obivously rectangle A B C D
 	int minX = static_cast<int>(std::floor((position.x - radius) / cellSize));
 	int maxX = static_cast<int>(std::floor((position.x + radius) / cellSize));
 	int minY = static_cast<int>(std::floor((position.y - radius) / cellSize));
 	int maxY = static_cast<int>(std::floor((position.y + radius) / cellSize));
 
+	// square
 	float radiusSquared = radius * radius;
 
 	for (int x = minX; x <= maxX; ++x) {
 		for (int y = minY; y <= maxY; ++y) {
+			// for all intire square I check every position
 			std::pair<int, int> cell = std::make_pair(x, y);
+			// if we call grid method find and it is not grid int, meaning it is present inside
 			if (grid.find(cell) != grid.end()) {
-				for (const int& objectID : grid[cell]) {
+				// for list in grid cell
+				for (int& objectID : grid[cell]) {
+					// get object in position
 					sf::Vector2f objectPosition = getObjectPosition(objectID); // Fetch object position.
 					float distanceSquared = (position.x - objectPosition.x) * (position.x - objectPosition.x) +
 						(position.y - objectPosition.y) * (position.y - objectPosition.y);
 					if (distanceSquared <= radiusSquared) {
-						nearbyObjects.push_back(objectID);
+						// I don't understand, why is that thing working like that?
+						// if distant, based on position, that we are detecting
+						if (originID != objectID) {
+							if (!nearbyObjects.contains(objectID)) {
+								nearbyObjects.insert(objectID, objectID);
+
+							}
+						}
 					}
 				}
 			}
@@ -194,6 +209,23 @@ void Map::clearHashMap()
 void Map::drawGrid()
 {
 
+}
+
+
+
+int Map::getTypeObject(int ObjectID)
+{
+	// stars are 1, ships are 2
+	if (allShips.contains(ObjectID)) {
+		return 2;
+	}
+	else if (stars.contains(ObjectID)) {
+		return 1;
+	}
+
+
+
+	return 0;
 }
 
 sf::Vector2f Map::getObjectPosition(int objectID)
@@ -395,9 +427,37 @@ void Map::addShip(SpaceShip ship)
 	//std::cout << "Added ship into variant array: " << ship << std::endl;
 }
 
+// it will acept star id, if ship is in the star object
 void Map::destroyShip(int ship_id)
 {
+	// destroying ship functionality
+	// remove it from all ships
 
+	//SpaceShip& ship = allShips.get(ship_id);
+	auto occupiedCells = getOccupiedCells(allShips.get(ship_id).pos, allShips.get(ship_id).spriteSize);
+
+	for (const auto& cell : occupiedCells) {
+		auto& objects = grid[cell];
+		objects.erase(std::remove(objects.begin(), objects.end(), ship_id), objects.end());
+		if (objects.empty()) {
+			grid.erase(cell);
+		}
+	}
+
+	allShips.erase(ship_id); // this is not working
+	// if it is in selected ships, remove it from selected ships
+	if (selectedShips.contains(ship_id)) {
+		selectedShips.erase(ship_id);
+	}
+	// if it is in moving objects, remove it from moving objects
+	if (movingShips.contains(ship_id)) {
+		movingShips.erase(ship_id);
+	}
+	// if it is in nearbyObjects, remove it from nearby objects
+	// don't forget to remove them from the grid
+	std::cout << "deletion complete" << std::endl;
+
+	// remove it from star, if necesery
 
 }
 

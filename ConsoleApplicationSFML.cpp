@@ -146,9 +146,9 @@ int main()
         sf::Vertex(sf::Vector2f(0,0), sf::Color::Magenta),
     };
 
-    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture);
-    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture);
-    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture);
+    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture, 1);
+    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture, 1);
+    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture, 2);
 
 
     //
@@ -680,28 +680,57 @@ int main()
             //currentlyOccupiedCells;
             mapGameObject.updateObjectPosition(elem, oldPos, mapGameObject.allShips.get(elem).pos);
             
+            if (!mapGameObject.allShips.get(elem).inMotion) {
+                mapGameObject.movingShips.erase(elem);
+                break;
+            }
+
             // this don't work as it should
-            std::vector<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 5);
+            DynamicSparseSet<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 15, elem);
             std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
-            if (nearbyObjects.size() > 1) {
+            if (nearbyObjects.size() > 0) {
                 std::cout << "Coliding this are all nearby objects!" << std::endl;
+                
+                auto& nearObjects = nearbyObjects.getElements();
+                // u need to iterate using other way...
                 for (size_t j = 0; j < nearbyObjects.size(); ++j)
                 {
-                    std::cout << "Objects: " << nearbyObjects[j] << std::endl;
+                    // use nearby Element
+                    const auto& nearbyElement = nearObjects[j];
+
+                    std::cout << "Objects: " << nearbyObjects.get(nearbyElement) << std::endl;
+
+                    int objectTypeThis = mapGameObject.getTypeObject(elem);
+                    int objectTypeNearby = mapGameObject.getTypeObject(nearbyElement);
+                    // here I will make logic of colision
+
+                    // making ships destroyable
+                    if (objectTypeThis == objectTypeNearby == 1) {
+                        // if other ships has other team, then I will make them destroy each other for now... 
+                        int thisTeam = mapGameObject.allShips.get(elem).teamID;
+                        int otherTeam = mapGameObject.allShips.get(nearbyElement).teamID;
+                        if (thisTeam != otherTeam) {
+                            std::cout << "Destroying ship with id: " << elem << ", " << nearbyElement << std::endl;
+                            mapGameObject.destroyShip(elem);
+                            mapGameObject.destroyShip(nearbyElement);
+                            nearbyObjects.erase(nearbyElement);
+                            // delete them from grid too
+                            break;
+                        }
+
+                    }
 
                 }
             }
 
 
             // here I need to determine all object appearence in hashmap and after that with for loop insert it into hashmap
-
+            std::cout << "Here we can!" << std::endl;
 
             //mapGameObject.insertIntoHashMap(elem, mapGameObject.allShips.get(elem).pos);
-            if (!mapGameObject.allShips.get(elem).inMotion) {
-                mapGameObject.movingShips.erase(elem);
-                break;
-            }
+            
         }
+        std::cout << "Here we go" << std::endl;
 
         //for (size_t i = 0; i < mapGameObject.movingShips.size(); i++)
         //{
@@ -1035,7 +1064,7 @@ int main()
         window.draw(time_text);
 
         // Отображение окна на экране
-        window.display();   
+        window.display(); 
     }
 
     return 0;

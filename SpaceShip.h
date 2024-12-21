@@ -19,6 +19,7 @@ public:
     float speed = 100.0f;
     int sector[2];
     int id;
+    int teamID;
     
     std::string team = ("base_team");
     
@@ -39,7 +40,7 @@ public:
     // replace vector with 2D coordinates array. If ship path is reset, then it just resets array. Ship path can only be set by stars
     //std::vector<StarSystem*> path;
 
-    SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int id=0);
+    SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int teamID, int id=0);
 
     ~SpaceShip();
 

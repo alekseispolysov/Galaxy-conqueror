@@ -32,25 +32,35 @@ template<typename T>
 void DynamicSparseSet<T>::insert(int id, T& value)
 {
     ensureCapacity(id); // Ensure sparse array can accommodate the ID
+
     if (contains(id)) return; // Ignore duplicates
+
     sparse[id] = dense.size(); // Map sparse[id] to position in dense array
-    dense.push_back(value);       // Add the ID to the dense array
-    ids.push_back(id);
+    dense.push_back(value);    // Add the value to the dense array
+    ids.push_back(id);         // Add the ID to the IDs vector
 }
+
 
 
 template<typename T>
 void DynamicSparseSet<T>::erase(int id)
 {
     if (!contains(id)) return; // Ignore if ID is not in the set
+
     int denseIndex = sparse[id];          // Position of the element in the dense array
-    int lastID = dense.back();            // Get the last element in dense array
-    dense[denseIndex] = dense.back();     // Move the last value to the deleted position
-    sparse[lastID] = denseIndex;          // Update the sparse array for the moved element
-    sparse[id] = -1;                      // Mark the deleted ID as removed
-    dense.pop_back();                     // Remove the last value
-    ids.pop_back();                       // Remove the last ID
+    int lastDenseIndex = dense.size() - 1;
+
+    if (denseIndex != lastDenseIndex) {   // Only swap if not the last element
+        dense[denseIndex] = std::move(dense.back()); // Move the last element to the erased position
+        ids[denseIndex] = ids.back();                // Update the IDs vector
+        sparse[ids[denseIndex]] = denseIndex;        // Update the sparse array for the moved element
+    }
+
+    dense.pop_back(); // Remove the last element from dense
+    ids.pop_back();   // Remove the last ID from IDs
+    sparse[id] = -1;  // Mark the deleted ID as removed
 }
+
 
 template<typename T>
 bool DynamicSparseSet<T>::contains(int id)
