@@ -156,6 +156,7 @@ public:
 
 	void cleanSelection();
 	//std::vector <VariantType> checkColisionForAllShips();
+	bool colisionCheck(int originID, int otherID);
 	void printSectors();
 	void determineSectorsForObjects();
 	std::tuple<bool, int> collisionBetweenSectors(int ship_id, int sector_id);

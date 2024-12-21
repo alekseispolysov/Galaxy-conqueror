@@ -704,33 +704,40 @@ int main()
                     int objectTypeNearby = mapGameObject.getTypeObject(nearbyElement);
                     // here I will make logic of colision
 
-                    // making ships destroyable
-                    if (objectTypeThis == objectTypeNearby == 1) {
-                        // if other ships has other team, then I will make them destroy each other for now... 
-                        int thisTeam = mapGameObject.allShips.get(elem).teamID;
-                        int otherTeam = mapGameObject.allShips.get(nearbyElement).teamID;
-                        if (thisTeam != otherTeam) {
-                            std::cout << "Destroying ship with id: " << elem << ", " << nearbyElement << std::endl;
-                            mapGameObject.destroyShip(elem);
-                            mapGameObject.destroyShip(nearbyElement);
-                            nearbyObjects.erase(nearbyElement);
-                            // delete them from grid too
-                            break;
-                        }
+                    // add complex logic of colision (detect preciselly, if objects are colliding
+                    bool collides = mapGameObject.colisionCheck(elem, nearbyElement);
 
+                    if (collides) {
+
+                        // making ships destroyable
+                        if (objectTypeThis == objectTypeNearby == 1) {
+                            // if other ships has other team, then I will make them destroy each other for now... 
+                            int thisTeam = mapGameObject.allShips.get(elem).teamID;
+                            int otherTeam = mapGameObject.allShips.get(nearbyElement).teamID;
+                            if (thisTeam != otherTeam) {
+                                std::cout << "Destroying ship with id: " << elem << ", " << nearbyElement << std::endl;
+                                mapGameObject.destroyShip(elem);
+                                mapGameObject.destroyShip(nearbyElement);
+                                nearbyObjects.erase(nearbyElement);
+                                // delete them from grid too
+                                break;
+                            }
+
+                        }
                     }
+
 
                 }
             }
 
 
             // here I need to determine all object appearence in hashmap and after that with for loop insert it into hashmap
-            std::cout << "Here we can!" << std::endl;
+            //std::cout << "Here we can!" << std::endl;
 
             //mapGameObject.insertIntoHashMap(elem, mapGameObject.allShips.get(elem).pos);
             
         }
-        std::cout << "Here we go" << std::endl;
+        //std::cout << "Here we go" << std::endl;
 
         //for (size_t i = 0; i < mapGameObject.movingShips.size(); i++)
         //{

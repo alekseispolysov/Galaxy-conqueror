@@ -44,7 +44,7 @@ C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Cons
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:             T=float
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(670,25): warning C4244:         ]
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(696,38): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(1058,30): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(1065,30): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(188,11): warning C4101: time_weeks: неиспользованная локальная переменная
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(189,11): warning C4101: time_months: неиспользованная локальная переменная
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\ConsoleApplicationSFML.cpp(190,11): warning C4101: time_years: неиспользованная локальная переменная
@@ -118,20 +118,20 @@ C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(365,57): warning C4244:         [
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(365,57): warning C4244:             T=float
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(365,57): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(487,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(489,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(489,15): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(489,15): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(489,15): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(489,15): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(490,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(490,15): warning C4244:         with
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(490,15): warning C4244:         [
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(490,15): warning C4244:             T=float
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(490,15): warning C4244:         ]
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(499,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(484,6): warning C4101: ySector: неиспользованная локальная переменная
-C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(483,6): warning C4101: xSector: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(501,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(503,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(503,15): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(503,15): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(503,15): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(503,15): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(504,15): warning C4244: инициализация: преобразование "T" в "int", возможна потеря данных
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(504,15): warning C4244:         with
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(504,15): warning C4244:         [
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(504,15): warning C4244:             T=float
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(504,15): warning C4244:         ]
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(513,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(498,6): warning C4101: ySector: неиспользованная локальная переменная
+C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\Map.cpp(497,6): warning C4101: xSector: неиспользованная локальная переменная
 C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(68,15): warning C4018: <: несоответствие типов со знаком и без знака
   (компиляция исходного файла "Map.cpp")
       C:\Users\Aleksei\source\repos\ConsoleApplicationSFML\ConsoleApplicationSFML\DynamicSparseSet.h(68,15):

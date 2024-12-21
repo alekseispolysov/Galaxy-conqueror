@@ -472,6 +472,20 @@ void Map::destroyShip(int ship_id)
 //	return std::vector<VariantType>();
 //}
 
+bool Map::colisionCheck(int originID, int otherID)
+{
+	if (allShips.contains(otherID)) {
+		return allShips.get(originID).shipSprite.getGlobalBounds().intersects(allShips.get(otherID).shipSprite.getGlobalBounds());
+	}
+	else if (stars.contains(otherID)){
+		return false;
+	}
+
+
+
+	return false;
+}
+
 void Map::printSectors()
 {
 	//std::cout << "This is one of the sectors" << allSectors[3][2] << std::endl;
