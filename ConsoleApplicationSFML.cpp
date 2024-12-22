@@ -43,6 +43,7 @@ int main()
     // GUI creation and set settings
     tgui::Gui gui(window);
 
+    // selection pannel
     auto panel = tgui::Panel::create();
     panel->setSize(sizeWin.x /5.6, sizeWin.y/1.5);
     panel->setPosition(150, 150);
@@ -336,11 +337,25 @@ int main()
 
             // selection logic
             bool control = false;
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
-                sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view); 
+            sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window); 
+            sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
 
-                bool disable_star_selection = false;
+            bool isOverGui;
+            tgui::Widget::Ptr widget = gui.getWidgetAtPos(sf::Vector2f(mouseWindowPos.x, mouseWindowPos.y), true);
+            if (widget) {
+                isOverGui = true;
+                std::cout << isOverGui << std::endl;
+            }
+            else {
+                isOverGui = false;
+                std::cout << isOverGui << std::endl;
+            }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isOverGui) {
+                
+
+                
+
                 // selection with control
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     // inside selected?
