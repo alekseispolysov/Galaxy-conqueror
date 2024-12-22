@@ -222,18 +222,14 @@ int main()
     //sprite.setFillColor(sf::Color::Green);
     //sprite.setPosition(100.f, 100.f); // Starting position
 
-
-
-    //sf::Vector2f start(100.f, 100.f);
-    // 
-    // MOVE THIS IN WHERE IT BELONGS
-    //sf::Vector2f stop(500.f, 400.f); // in stop setting call
-    //sf::Vector2f direction = normalize(stop - start); // Normalized direction vector // this will happen inside ship, maybe?
-    //float speed = 100.f; // Pixels per second // inside ship?
-    //sf::Clock clock; // For tracking time // here I defined this
-    // 
-    //sf::Vector2f currentPosition = start; // already defined on creating -----
-
+   
+    // This is a part of selection logic (rectangle selection)
+    sf::Vector2i mouseWindowOnButtonPress;
+    bool mouseStilPressed = false;
+    sf::Vector2i mouseWindowOnButtonRelease;
+    sf::RectangleShape mouseBox;
+    mouseBox.setFillColor(sf::Color(255, 0, 0, 128));
+    mouseBox.setOutlineColor(sf::Color(255, 0, 0));
 
     // Главный цикл программы
     while (window.isOpen())
@@ -457,6 +453,14 @@ int main()
             // selection without control
             if (event.type == sf::Event::MouseButtonPressed) {
                    
+                //sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
+                //sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
+
+                // detect mouse and write it to vectors
+                mouseWindowOnButtonPress = sf::Vector2i(mouseWorldPos.x ,mouseWorldPos.y);
+                mouseStilPressed = true;
+                
+
                 if (event.mouseButton.button == sf::Mouse::Right) {
                     //std::cout << "Coordinates of mouse:" << event.mouseButton.x << " X, " << event.mouseButton.y << " Y.\n";
                     // it's printing the coordinates of window. Question is, how do I get real coordinates?
@@ -479,6 +483,22 @@ int main()
                     }
                     
                 }
+            }
+
+            if (mouseStilPressed) {
+                mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
+            }
+
+            if (event.type == sf::Event::MouseButtonReleased) {
+                // selection logic here
+                mouseStilPressed = false;
+                auto relevantCells = mapGameObject.getOccupiedCells(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y), sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+                
+                // iterate throw relevant cells
+
+
+                // iterate throw positions in
+
             }
 
             // logic of zooming
@@ -651,6 +671,16 @@ int main()
         else {
             panel->setVisible(true);
         }
+
+
+        // this is the type of selection, that is under gui. Second type of selection would be on top of the gui
+        if (mouseStilPressed) {
+            // draw selection (correct)
+            mouseBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y));
+            mouseBox.setSize(sf::Vector2f( mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x,  mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+            window.draw(mouseBox);
+        }
+
 
         gui.draw();
         // Отображение окна на экране
