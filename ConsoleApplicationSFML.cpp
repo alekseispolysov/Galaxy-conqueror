@@ -55,10 +55,13 @@ int main()
     picture->setPosition(20, 20);  // Position inside the panel
     panel->add(picture);
 
-    auto button = tgui::Button::create("Click Me");
+    // initially dark and not here
+    panel->setVisible(false);
+
+    /*auto button = tgui::Button::create("Click Me");
     button->setSize(150, 100);
     button->setPosition(150, 100);
-    gui.add(button);
+    gui.add(button);*/
 
     // GUI settings end
 
@@ -641,6 +644,13 @@ int main()
         }
 
         window.draw(time_text);
+
+        if (mapGameObject.selectedStars.size() < 1 && mapGameObject.selectedShips.size() < 1) {
+            panel->setVisible(false);
+        }
+        else {
+            panel->setVisible(true);
+        }
 
         gui.draw();
         // Отображение окна на экране
