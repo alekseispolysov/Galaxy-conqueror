@@ -6,6 +6,10 @@
 #include <algorithm>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Core.hpp>          // Core system for GUI management
+#include <TGUI/Widgets/Button.hpp> // Include specific widget headers, like Button
+#include <TGUI/Backend/SFML-Graphics.hpp>
 #include <tuple>
 #include "DynamicSparseSet.h"
 #include "StarSystem.h"
@@ -34,6 +38,11 @@ int main()
     // Создаем окно с размерами 800x600 и названием "SFML Test"   , sf::Style::Fullscreen
     // everything about video setting we will find here
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Star Strategy Game");
+    tgui::Gui gui(window);
+    auto button = tgui::Button::create("Click Me");
+    button->setPosition(350, 250);
+    button->setSize(100, 50);
+    gui.add(button);
 
     sf::Vector2u sizeWin = window.getSize();
 
@@ -1036,7 +1045,7 @@ int main()
         window.draw(dot);
 
         window.draw(testShape);
-
+        
 
         
         /*star4.DrawAllConnections(window);
@@ -1070,6 +1079,7 @@ int main()
 
         window.draw(time_text);
 
+        gui.draw();
         // Отображение окна на экране
         window.display(); 
     }
