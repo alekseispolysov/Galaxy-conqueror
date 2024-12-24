@@ -115,12 +115,6 @@ int main()
     //sf::Image subImage = iconsSpreadsheet.copyToImage();
     //subImage = subImage.copy(chatIconRect.left, chatIconRect.top, chatIconRect.width, chatIconRect.height);
 
-    sf::Sprite iconSprite(iconsSpreadsheet, chatIconRect); 
-    sf::Texture iconTexture; 
-    iconTexture.loadFromImage(iconSprite.getTexture()->copyToImage()); 
-    sf::Image iconImage = iconTexture.copyToImage();
-    sf::Texture newTexture;
-    newTexture.loadFromImage(iconImage);
 
     // selection pannel
     auto panel = tgui::Panel::create();
@@ -146,7 +140,9 @@ int main()
     auto settingsMenuButton = tgui::Button::create("...");
     settingsMenuButton->setSize(50, 50);
     settingsMenuButton->setPosition(50, 50);
-    settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
+    settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 255));
+    
+
     //settingsMenuButton->setTexture(iconTexture);
     /*tgui::Texture tguiPicture; 
     tguiPicture.loadFromPixelData(sfPicture.getSize(), sfPicture.copyToImage().getPixelsPtr());
@@ -157,7 +153,7 @@ int main()
     //tguiTexture.setData(sfTexture);
     //tgui::Texture tguiTexture(iconTexture);
     sf::Texture croppedTexture;
-    croppedTexture.loadFromImage(newTexture.copyToImage(), sf::IntRect(80, 128, 16, 16));
+    croppedTexture.loadFromImage(iconsSpreadsheet.copyToImage(), sf::IntRect(80, 128, 16, 16));
 
     tgui::Texture chatIcon;
     chatIcon.loadFromPixelData(croppedTexture.getSize(), croppedTexture.copyToImage().getPixelsPtr());
@@ -167,6 +163,7 @@ int main()
 
     //tguiTexture.loadFromPixelData(tguiTexture.getImageSize(), );
     settingsMenuButton->getRenderer()->setTexture(chatIcon);
+    //settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
     //settingsMenuButton->getRenderer()->
     
     //settingsMenuButton->getRenderer()->setTexture(iconsSpreadsheet);
