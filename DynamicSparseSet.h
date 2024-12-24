@@ -77,7 +77,7 @@ T& DynamicSparseSet<T>::get(int id)
 
 template<typename T>
 const std::vector<T>& DynamicSparseSet<T>::getElements() const
-{
+{   
     return dense;
 }
 

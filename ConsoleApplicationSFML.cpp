@@ -40,30 +40,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Star Strategy Game");
     
     sf::Vector2u sizeWin = window.getSize();
-    // GUI creation and set settings
-    tgui::Gui gui(window);
-
-    // selection pannel
-    auto panel = tgui::Panel::create();
-    panel->setSize(sizeWin.x /5.6, sizeWin.y/1.5);
-    panel->setPosition(150, 150);
-    panel->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
-    gui.add(panel);
-
-    auto picture = tgui::Picture::create("Images/Placeholder/SpaceBackground-3.jpg");
-    picture->setSize(panel->getSize().x - 40, 150);  // Image size
-    picture->setPosition(20, 20);  // Position inside the panel
-    panel->add(picture);
-
-    // initially dark and not here
-    panel->setVisible(false);
-
-    /*auto button = tgui::Button::create("Click Me");
-    button->setSize(150, 100);
-    button->setPosition(150, 100);
-    gui.add(button);*/
-
-    // GUI settings end
+    
 
 
     // setting view
@@ -83,14 +60,8 @@ int main()
 
 
 
-    // first star object
-  
+    
 
-    // logic of creating objects
-
-    sf::CircleShape dot(3);
-    dot.setFillColor(sf::Color::Red);
-    dot.setPosition(400, 300);
 
     
     // Loading all textures and images
@@ -120,6 +91,104 @@ int main()
         return -1;
     }
 
+    // loading icons
+    sf::Texture iconsSpreadsheet;
+    if (!iconsSpreadsheet.loadFromFile("images/Icons and UI/tilemap_packed.png")) {
+        std::cerr << "Failed to load icons!" << std::endl;
+        return -1;
+    }
+
+    // loading complete
+
+    // GUI creation and set settings
+    tgui::Gui gui(window); // selection menu
+
+    // preparing icons for UI
+    sf::IntRect chatIconRect(0, 0, 16, 16);
+    // Load the texture into TGUI::Texture using the sub-rectangle
+    auto textureFilePath = "images/Icons and UI/tilemap_packed.png"; // Path to the sprite sheet
+    //tgui::Texture tguiTexture(textureFilePath, { chatIconRect.left, chatIconRect.top, chatIconRect.width, chatIconRect.height });
+    // Load the texture into TGUI::Texture
+    //tgui::Texture tguiTexture("images/Icons and UI/tilemap_packed.png");
+
+    //tguiTexture.setSubRect(chatIconRect);
+    //sf::Image subImage = iconsSpreadsheet.copyToImage();
+    //subImage = subImage.copy(chatIconRect.left, chatIconRect.top, chatIconRect.width, chatIconRect.height);
+
+    sf::Sprite iconSprite(iconsSpreadsheet, chatIconRect); 
+    sf::Texture iconTexture; 
+    iconTexture.loadFromImage(iconSprite.getTexture()->copyToImage()); 
+    sf::Image iconImage = iconTexture.copyToImage();
+    sf::Texture newTexture;
+    newTexture.loadFromImage(iconImage);
+
+    // selection pannel
+    auto panel = tgui::Panel::create();
+    panel->setSize(sizeWin.x / 5.6, sizeWin.y / 1.5);
+    panel->setPosition(150, 150);
+    panel->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
+    gui.add(panel);
+
+    auto picture = tgui::Picture::create("Images/Placeholder/SpaceBackground-3.jpg");
+    picture->setSize(panel->getSize().x - 40, 150);  // Image size
+    picture->setPosition(20, 20);  // Position inside the panel
+    panel->add(picture);
+
+    // initially dark and not here
+    panel->setVisible(false);
+
+    /*auto button = tgui::Button::create("Click Me");
+    button->setSize(150, 100);
+    button->setPosition(150, 100);
+    gui.add(button);*/
+
+    // settings menu button on the top
+    auto settingsMenuButton = tgui::Button::create("...");
+    settingsMenuButton->setSize(50, 50);
+    settingsMenuButton->setPosition(50, 50);
+    settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
+    //settingsMenuButton->setTexture(iconTexture);
+    /*tgui::Texture tguiPicture; 
+    tguiPicture.loadFromPixelData(sfPicture.getSize(), sfPicture.copyToImage().getPixelsPtr());
+    auto picture = tgui::Picture::create(std::move(tguiPicture));*/
+
+    //sf::Image iconImage = iconSprite.getTexture()->copyToImage();  // Get the image from sprite 
+
+    //tguiTexture.setData(sfTexture);
+    //tgui::Texture tguiTexture(iconTexture);
+    sf::Texture croppedTexture;
+    croppedTexture.loadFromImage(newTexture.copyToImage(), sf::IntRect(80, 128, 16, 16));
+
+    tgui::Texture chatIcon;
+    chatIcon.loadFromPixelData(croppedTexture.getSize(), croppedTexture.copyToImage().getPixelsPtr());
+
+    //chatIcon.~Texture
+
+
+    //tguiTexture.loadFromPixelData(tguiTexture.getImageSize(), );
+    settingsMenuButton->getRenderer()->setTexture(chatIcon);
+    //settingsMenuButton->getRenderer()->
+    
+    //settingsMenuButton->getRenderer()->setTexture(iconsSpreadsheet);
+    gui.add(settingsMenuButton);
+
+    // chat button in bottom left cornder
+    auto chatButton = tgui::Button::create("Chat");
+    chatButton->setSize(50, 50);
+    chatButton->setPosition(50, sizeWin.y - 200);
+    chatButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
+    gui.add(chatButton);
+
+    // GUI settings end
+
+    // first star object
+
+
+    // logic of creating objects
+
+    sf::CircleShape dot(3);
+    dot.setFillColor(sf::Color::Red);
+    dot.setPosition(400, 300);
 
     //shaderStar.setUniform("fadeFactor", 0.5f); // Adjust fade sharpness
 
