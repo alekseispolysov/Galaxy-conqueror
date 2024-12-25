@@ -123,6 +123,32 @@ std::vector<std::pair<int, int>> Map::getOccupiedCells(sf::Vector2f position, sf
 	 return occupiedCells;
 }
 
+std::vector<std::pair<int, int>> Map::getFilledCells(sf::Vector2f position, sf::Vector2f size)
+{
+	std::vector<std::pair<int, int>> filledCells;
+
+	int minX = static_cast<int>(std::floor(position.x / cellSize));
+	int maxX = static_cast<int>(std::floor((position.x + size.x) / cellSize));
+	int minY = static_cast<int>(std::floor(position.y / cellSize));
+	int maxY = static_cast<int>(std::floor((position.y + size.y) / cellSize));
+
+	for (int x = minX; x <= maxX;) {
+		for (int y = minY; y <= maxY;) {
+			
+			if (grid.find({x, y}) != grid.end()) {
+
+				filledCells.emplace_back(x, y);
+			}
+			y += cellSize;
+		}
+		x += cellSize;
+		
+	}
+
+	return filledCells;
+
+}
+
 void Map::updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition)
 {
 	auto oldCells = getOccupiedCells(oldPosition, allShips.get(objectID).spriteSize);
@@ -361,7 +387,7 @@ void Map::addStar(StarSystem star)
 	unique_object_id += 1;
 	star_id_count += 1;
 
-	// inserting ship into multiple cells
+	// inserting star into multiple cells
 	auto occupiedCells = getOccupiedCells(sf::Vector2f(star.starXposMap, star.starYposMap), sf::Vector2f(star.radius, star.radius));
 	for (const auto& cell : occupiedCells) {
 		grid[cell].push_back(star.id);

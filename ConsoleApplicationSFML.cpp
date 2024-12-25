@@ -409,11 +409,11 @@ int main()
             tgui::Widget::Ptr widget = gui.getWidgetAtPos(sf::Vector2f(mouseWindowPos.x, mouseWindowPos.y), true);
             if (widget) {
                 isOverGui = true;
-                std::cout << isOverGui << std::endl;
+                //std::cout << isOverGui << std::endl;
             }
             else {
                 isOverGui = false;
-                std::cout << isOverGui << std::endl;
+                //std::cout << isOverGui << std::endl;
             }
 
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isOverGui) {
@@ -516,9 +516,18 @@ int main()
                 
             }
 
+            bool selectionClear = true;
             // selection without control
             if (event.type == sf::Event::MouseButtonPressed) {
-                   
+                
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                    selectionClear = false;
+                }
+
+                if (selectionClear && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    mapGameObject.cleanSelection();
+                }
+
                 //sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
                 //sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
 
@@ -558,10 +567,59 @@ int main()
             if (event.type == sf::Event::MouseButtonReleased) {
                 // selection logic here
                 mouseStilPressed = false;
-                auto relevantCells = mapGameObject.getOccupiedCells(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y), sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
-                
-                // iterate throw relevant cells
+                // before I do that, I need always swap coordinates, so function will always work
+                // coordinates needs to be swaped to left up corner
+                if (mouseWindowOnButtonPress.x > mouseWindowOnButtonRelease.x) {
+                    std::swap(mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.x);
+                }
+                if (mouseWindowOnButtonPress.y > mouseWindowOnButtonRelease.y) {
+                    std::swap(mouseWindowOnButtonPress.y, mouseWindowOnButtonRelease.y);
+                }
 
+                // also I don't understand, why am I selecting all cells, instead of cells that having something inside, It is possible, that I don't have this funciton
+                auto relevantCells = mapGameObject.getFilledCells(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y), sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+                
+                // I will make this cells work, after that I will take up code, that is responsible for
+                // coordinates adjustments
+
+                // get all ids from vectors into set
+                // select
+
+                DynamicSparseSet<int> selectedObjects;
+                // iterate throw relevant cells
+                int x = 0;
+                for (const auto& cell : relevantCells) {
+                    auto& objects = mapGameObject.grid[cell];
+                    std::cout << "Iteration in grid: " << x << std::endl;
+                    x += 1;
+                    
+                    // after this I need to check if it is preciselly inside rectangle
+
+                    // iterate throw vector and
+                    for (auto& vectorElement : objects)
+                    {
+                        std::cout << "we are not here" << std::endl;
+
+                        int type = mapGameObject.getTypeObject(vectorElement);
+                        std::cout << "we are here" << std::endl;
+                        // insert its objects into its dynamic sparse set, based on Id of the object
+                        if (type == 2) {
+                            std::cout << "We are selected ship: " << vectorElement << std::endl;
+                            mapGameObject.selectedShips.insert(vectorElement, vectorElement);
+                        }
+                        if (type == 1) {
+                            std::cout << "We are selected star: " << vectorElement << std::endl;
+                            mapGameObject.selectedStars.insert(vectorElement, vectorElement);
+                        }
+                    }
+
+
+
+                    
+
+
+                    //.push_back(star.id);
+                }
 
                 // iterate throw positions in
 

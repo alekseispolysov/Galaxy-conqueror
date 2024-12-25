@@ -79,18 +79,19 @@ private:
 
 	// spatial hashing functionality
 	float cellSize = 15.0f;
-	std::unordered_map<std::pair<int, int>, std::vector<int>, PairHash> grid;
 	std::pair<int, int> getCell(const sf::Vector2f position);
 	// some dynamic sparse set, to hold all active points in order to draw them
 	std::vector<sf::Vector2f> activeCells;
 
 public:
+	std::unordered_map<std::pair<int, int>, std::vector<int>, PairHash> grid;
 	// spatial hashing functionality
 	void insertIntoHashMap(int objectID, sf::Vector2f position);
 	void removeFromHashMap(int objectID, sf::Vector2f position);
 
 	void visualizeHashMapFill(sf::RenderWindow& win);
 	std::vector<std::pair<int, int>> getOccupiedCells(sf::Vector2f position, sf::Vector2f size);
+	std::vector<std::pair<int, int>> getFilledCells(sf::Vector2f position, sf::Vector2f size);
 	void updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition);
 	DynamicSparseSet<int> queryHashMap(sf::Vector2f position, float radius, int originId); 
 	void clearHashMap();
