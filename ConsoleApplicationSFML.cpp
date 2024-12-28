@@ -590,7 +590,7 @@ int main()
                 int x = 0;
                 for (const auto& cell : relevantCells) {
                     auto& objects = mapGameObject.grid[cell];
-                    std::cout << "Iteration in grid: " << x << std::endl;
+                    //std::cout << "Iteration in grid: " << x << std::endl;
                     x += 1;
                     
                     // after this I need to check if it is preciselly inside rectangle
@@ -598,22 +598,61 @@ int main()
                     // iterate throw vector and
                     for (auto& vectorElement : objects)
                     {
-                        std::cout << "we are not here" << std::endl;
+                        //std::cout << "we are not here" << std::endl;
 
-                        int type = mapGameObject.getTypeObject(vectorElement);
-                        std::cout << "we are here" << std::endl;
-                        // insert its objects into its dynamic sparse set, based on Id of the object
-                        if (type == 2) {
-                            std::cout << "We are selected ship: " << vectorElement << std::endl;
-                            mapGameObject.selectedShips.insert(vectorElement, vectorElement);
-                        }
-                        if (type == 1) {
-                            std::cout << "We are selected star: " << vectorElement << std::endl;
-                            mapGameObject.selectedStars.insert(vectorElement, vectorElement);
-                        }
+                        selectedObjects.insert(vectorElement, vectorElement);
+
+
+
+                        //int type = mapGameObject.getTypeObject(vectorElement);
+                        ////std::cout << "we are here" << std::endl;
+                        //// insert its objects into its dynamic sparse set, based on Id of the object
+                        //if (type == 2) {
+                        //    //std::cout << "We are selected ship: " << vectorElement << std::endl;
+                        //    mapGameObject.selectedShips.insert(vectorElement, vectorElement);
+                        //}
+                        //if (type == 1) {
+                        //    //std::cout << "We are selected star: " << vectorElement << std::endl;
+                        //    mapGameObject.selectedStars.insert(vectorElement, vectorElement);
+                        //}
                     }
 
+                    sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+                    selectionBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress));
 
+                    for (const auto& elem : selectedObjects.getElements()) {
+                        // get object in actual dynamic sparase set with objects
+                        // this will not work, because if object is not ship, it will blow up
+                        int type = mapGameObject.getTypeObject(elem);
+                        if (type == 2) {
+                            //std::cout << "We are selected ship: " << vectorElement << std::endl;
+                            //mapGameObject.selectedShips.insert(elem, elem);
+                            //mapGameObject.allShips.get/
+                            auto ship = mapGameObject.allShips.get(elem);
+
+                            if (ship.shipSprite.getGlobalBounds().intersects(selectionBox.getGlobalBounds())) {
+                            
+                                mapGameObject.selectedShips.insert(ship.id, ship.id);
+                            
+                            }
+;
+                        }
+                        if (type == 1) {
+                            //std::cout << "We are selected star: " << vectorElement << std::endl;
+                            //mapGameObject.selectedStars.insert(elem, elem);
+                            auto star = mapGameObject.stars.get(elem);
+                            // if colide
+
+                            if (star.star.getGlobalBounds().intersects(selectionBox.getGlobalBounds())) {
+
+                                mapGameObject.selectedShips.insert(star.id, star.id);
+
+                            }
+
+                        }
+                        
+
+                    }
 
                     
 

@@ -132,16 +132,20 @@ std::vector<std::pair<int, int>> Map::getFilledCells(sf::Vector2f position, sf::
 	int minY = static_cast<int>(std::floor(position.y / cellSize));
 	int maxY = static_cast<int>(std::floor((position.y + size.y) / cellSize));
 
-	for (int x = minX; x <= maxX;) {
-		for (int y = minY; y <= maxY;) {
-			
+	for (int x = minX; x <= maxX; ++x) {
+		for (int y = minY; y <= maxY; ++y) {
+			;
 			if (grid.find({x, y}) != grid.end()) {
 
 				filledCells.emplace_back(x, y);
+				/*if (! grid.at({ x, y }).empty()) {
+
+				}*/
+
 			}
-			y += cellSize;
+			
 		}
-		x += cellSize;
+
 		
 	}
 
