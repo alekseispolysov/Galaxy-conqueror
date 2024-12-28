@@ -548,6 +548,7 @@ int main()
                     // that is how I can iterate throw selectedShips
                     for (const auto& elem : mapGameObject.selectedShips.getElements())
                     {
+                        std::cout << "Now error" << std::endl;
                         int ship_id = mapGameObject.selectedShips.get(elem);
                         if (!mapGameObject.allShips.get(elem).inMotion) {
                             mapGameObject.movingShips.insert(ship_id, ship_id);
@@ -555,11 +556,14 @@ int main()
                         }
                         std::cout << "Set new target for selected ship, ship id: " << ship_id << std::endl;
                         mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
+                        std::cout << "Now not error" << std::endl;
                     }
                     
                 }
             }
 
+
+            // check if stil pressed and event key is left:
             if (mouseStilPressed) {
                 mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
             }
@@ -595,28 +599,13 @@ int main()
                     
                     // after this I need to check if it is preciselly inside rectangle
 
-                    // iterate throw vector and
+                    // iterate throw vector and insert every found object into set
                     for (auto& vectorElement : objects)
                     {
-                        //std::cout << "we are not here" << std::endl;
-
                         selectedObjects.insert(vectorElement, vectorElement);
-
-
-
-                        //int type = mapGameObject.getTypeObject(vectorElement);
-                        ////std::cout << "we are here" << std::endl;
-                        //// insert its objects into its dynamic sparse set, based on Id of the object
-                        //if (type == 2) {
-                        //    //std::cout << "We are selected ship: " << vectorElement << std::endl;
-                        //    mapGameObject.selectedShips.insert(vectorElement, vectorElement);
-                        //}
-                        //if (type == 1) {
-                        //    //std::cout << "We are selected star: " << vectorElement << std::endl;
-                        //    mapGameObject.selectedStars.insert(vectorElement, vectorElement);
-                        //}
                     }
 
+                    // create box of selection
                     sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
                     selectionBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress));
 
@@ -645,7 +634,7 @@ int main()
 
                             if (star.star.getGlobalBounds().intersects(selectionBox.getGlobalBounds())) {
 
-                                mapGameObject.selectedShips.insert(star.id, star.id);
+                                mapGameObject.selectedStars.insert(star.id, star.id);
 
                             }
 
@@ -744,8 +733,9 @@ int main()
             }
 
             // this don't work as it should
+            // this selects only ships, not stars, so it is not working
             DynamicSparseSet<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 15, elem);
-            std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
+            //std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
             if (nearbyObjects.size() > 0) {
                 std::cout << "Coliding this are all nearby objects!" << std::endl;
                 
@@ -782,6 +772,11 @@ int main()
                             }
 
                         }
+
+                        if (objectTypeThis == 1 && objectTypeNearby == 2) {
+                            std::cout << "Coliding with star" << std::endl;
+                        }
+
                     }
 
 

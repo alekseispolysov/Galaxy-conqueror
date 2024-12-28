@@ -264,7 +264,7 @@ sf::Vector2f Map::getObjectPosition(int objectID)
 	if (allShips.contains(objectID)) {
 		return allShips.get(objectID).pos;
 	}
-	else if (stars.contains(objectID)) {
+	if (stars.contains(objectID)) {
 		return sf::Vector2f(stars.get(objectID).starXposMap, stars.get(objectID).starYposMap);
 	}
 	else {
