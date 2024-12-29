@@ -10,6 +10,10 @@
 #include <unordered_map>
 #include <cmath>
 #include <utility>  // For std::pair
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Core.hpp>          // Core system for GUI management
+#include <TGUI/Widgets/Button.hpp> // Include specific widget headers, like Button
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 //class DynamicSparseSet;
 
@@ -94,6 +98,7 @@ public:
 	std::vector<std::pair<int, int>> getFilledCells(sf::Vector2f position, sf::Vector2f size);
 	void updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition);
 	DynamicSparseSet<int> queryHashMap(sf::Vector2f position, float radius, int originId); 
+	
 	void clearHashMap();
 	void drawGrid();
 	

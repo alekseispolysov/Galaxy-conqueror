@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Core.hpp>          // Core system for GUI management
 #include <TGUI/Widgets/Button.hpp> // Include specific widget headers, like Button
@@ -76,6 +77,19 @@ int main()
     sf::IntRect textureRect(200, 200, 800, 600); // x, y, width, height
     backgroundSprite.setTextureRect(textureRect);
 
+    //place holder texture
+    //"Images/Placeholder/Background-1.jpg"
+    sf::Texture sharedTexturePlaceholderPic;
+    if (!sharedTexturePlaceholderPic.loadFromFile("Images/Placeholder/Background-1.jpg")) {
+        std::cerr << "Failed to load texture!" << std::endl;
+        return -1;
+    }
+
+    
+    //sharedTexturePlaceholderPic.loadFromFile("Images/Placeholder/Background-1.jpg");
+    
+    
+
 
     sf::Texture shipImageTexture;
     if (!shipImageTexture.loadFromFile("Images/Ships/Ship.png")) {
@@ -84,6 +98,26 @@ int main()
     }
     //sf::Sprite shipImageSprite;
     
+    // load sounds here
+    sf::SoundBuffer bufferSelectingUnits;
+    if (!bufferSelectingUnits.loadFromFile("Sounds/Units/rollover1.ogg")) {
+        std::cerr << "Error loading selecting ship sound file" << std::endl;
+        return -1; // Handle error
+    }
+
+    sf::SoundBuffer bufferSendingShips;
+    if (!bufferSendingShips.loadFromFile("Sounds/Units/Ship flying.wav")) {
+        std::cerr << "Error loading sending ship sound file" << std::endl;
+        return -1; // Handle error
+    }
+
+    // creating sound object
+    sf::Sound sound; 
+    //sound.setBuffer(buffer); for playing
+    //sound.play();
+
+
+
     // loading font for text
     sf::Font font;
     if (!font.loadFromFile("fonts/ARIAL.TTF")) {
@@ -101,7 +135,16 @@ int main()
     // loading complete
 
     // GUI creation and set settings
-    tgui::Gui gui(window); // selection menu
+    tgui::Gui gui(window); // selection menu  /////////////////////////////do all tgui manipulation after load backend!!! //////////
+
+
+    /*tgui::Texture tguiSharedTexture;
+    tguiSharedTexture.load(sharedTexturePlaceholderPic);*/
+    tgui::Texture tguiSharedTexture;
+    tguiSharedTexture.loadFromPixelData(
+        sharedTexturePlaceholderPic.getSize(),               // Size of the texture
+        sharedTexturePlaceholderPic.copyToImage().getPixelsPtr() // Pointer to the pixel data
+    );
 
     // preparing icons for UI
     sf::IntRect chatIconRect(0, 0, 16, 16);
@@ -117,27 +160,24 @@ int main()
 
 
     // selection pannel
-    auto panel = tgui::ScrollablePanel::create(); 
-    panel->setSize(sizeWin.x / 5.6, sizeWin.y / 1.5);
-    panel->setPosition(150, 150);
-    panel->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
-    gui.add(panel);
+    auto panelSelection = tgui::ScrollablePanel::create(); 
+    panelSelection->setSize(sizeWin.x / 5.6, sizeWin.y / 1.5);
+    panelSelection->setPosition(150, 150);
+    panelSelection->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
+    gui.add(panelSelection);
 
     auto picture = tgui::Picture::create("Images/Placeholder/SpaceBackground-3.jpg");
-    picture->setSize(panel->getSize().x - 40, 150);  // Image size
+    picture->setSize(panelSelection->getSize().x - 40, 150);  // Image size
     picture->setPosition(20, 20);  // Position inside the panel
-    panel->add(picture);
+    panelSelection->add(picture);
+
+    DynamicSparseSet<tgui::Panel::Ptr> selectionPannels;
 
     // testing puproposes of scrollabel pannelad
-    for (int i = 0; i < 20; ++i) {
-        auto button = tgui::Button::create("Button " + std::to_string(i + 1));
-        button->setSize({ "90%", "10%" });
-        button->setPosition("5%", (150 + 30 + 10 + i * 60)); // Position dynamically
-        panel->add(button);
-    }
+    
 
     // initially dark and not here
-    panel->setVisible(false);
+    panelSelection->setVisible(false);
 
     /*auto button = tgui::Button::create("Click Me");
     button->setSize(150, 100);
@@ -525,6 +565,7 @@ int main()
 
             bool selectionClear = true;
             // selection without control
+            // determine that it is rectangle selection, or not
             if (event.type == sf::Event::MouseButtonPressed && !isOverGui) {
                 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
@@ -534,6 +575,18 @@ int main()
                 if (selectionClear && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     std::cout << "Cleaned selection" << std::endl;
                     mapGameObject.cleanSelection();
+                    //panelSelection->removeAllWidgets();
+
+                    //selectionPannels.clear();
+                    auto widgets = panelSelection->getWidgets(); 
+
+                    // Iterate through the widgets and remove only those of type tgui::Panel
+                    for (const auto& widget : widgets) { 
+                        if (std::dynamic_pointer_cast<tgui::Panel>(widget)) { 
+                            panelSelection->remove(widget); // Remove the panel from the container 
+                        }
+                    }
+
                 }
 
                 //sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
@@ -566,6 +619,12 @@ int main()
                         mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
                         std::cout << "Now not error" << std::endl;
                     }
+
+                    if (mapGameObject.selectedShips.size() > 0) {
+                        sound.setBuffer(bufferSendingShips); 
+                        sound.play(); 
+                    }
+                    
                     
                 }
             }
@@ -600,6 +659,9 @@ int main()
                 DynamicSparseSet<int> selectedObjects;
                 // iterate throw relevant cells
                 int x = 0;
+                // create box of selection
+                sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+                selectionBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress));
                 for (const auto& cell : relevantCells) {
                     auto& objects = mapGameObject.grid[cell];
                     //std::cout << "Iteration in grid: " << x << std::endl;
@@ -613,11 +675,100 @@ int main()
                         selectedObjects.insert(vectorElement, vectorElement);
                     }
 
-                    // create box of selection
-                    sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
-                    selectionBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress));
+                    
 
+                    //for (int i = 0; i < 20; ++i) {
+                    //    auto panel = tgui::Panel::create();
+                    //    panel->setSize({ "90%", "50" });
+                    //    panel->setPosition("5%", (150 + 30 + 10 + i * 60)); // Position dynamically
+
+                    //    // image creation
+                    //    auto pictureSelectionPanel = tgui::Picture::create("Images/Placeholder/Background-1.jpg");
+                    //    pictureSelectionPanel->setSize(30, 30);
+                    //    pictureSelectionPanel->setPosition(10, 10);
+                    //    panel->add(pictureSelectionPanel);
+
+                    //    // label creation
+                    //    auto labelSelectionPanel = tgui::Label::create();
+                    //    labelSelectionPanel->setText("Object with id: 1");
+                    //    labelSelectionPanel->setPosition("20%", "5");
+                    //    // labelSelectionPanel->setTextSize(30); // Set font size
+                    //    // labelSelectionPanel->setTextColor(sf::Color::White); // Set text color
+                    //    panel->add(labelSelectionPanel);
+
+                    //    // input field creation
+                    //    auto inputSelectionPanel = tgui::EditBox::create();
+                    //    inputSelectionPanel->setPosition("20%", "20");
+                    //    inputSelectionPanel->setSize("30%", "20");
+                    //    inputSelectionPanel->setDefaultText("Place holder"); // Default text inside the input field
+                    //    // inputSelectionPanel->setTextSize(20); // Font size for the text inside the input field
+                    //    panel->add(inputSelectionPanel);
+
+                    //    // button creation
+                    //    auto buttonSelectionPanel = tgui::Button::create();
+                    //    buttonSelectionPanel->setSize(20, 20);
+                    //    buttonSelectionPanel->setPosition("90%", "20");
+                    //    panel->add(buttonSelectionPanel);
+
+                    //    // adding to panel
+                    //    panelSelection->add(panel);
+
+                    //    selectionPannels.insert(i, panel);
+                    //}
+
+                    // gui logic counter
+                    // I want to create some independed function that I call with passing arguments, that creates gui
+                    // so I don't have to brain myself with bottlenecks, where I need to place other gui code
+                    
+
+
+                    
+
+
+                    //.push_back(star.id);
+                }
+
+                int count = 0;
                     for (const auto& elem : selectedObjects.getElements()) {
+                        // gui creation
+                        auto panel = tgui::Panel::create();
+                        panel->setSize({ "90%", "50" });
+                        panel->setPosition("5%", (150 + 30 + 10 + count * 60)); // Position dynamically
+
+                        // image creation
+                        auto pictureSelectionPanel = tgui::Picture::create();
+                        pictureSelectionPanel->setSize(30, 30);
+                        pictureSelectionPanel->setPosition(10, 10);
+                        // sharedTexturePlaceholderPic
+                        //pictureSelectionPanel->getRenderer()->setTexture(tgui::Texture::loadFromPixelData(sharedTexturePlaceholderPic.getSize(), sharedTexturePlaceholderPic.copyToImage().getPixelsPtr()));
+                        pictureSelectionPanel->getRenderer()->setTexture(tguiSharedTexture);
+                        panel->add(pictureSelectionPanel);
+
+                        //    // label creationadad
+
+                        
+                        auto labelSelectionPanel = tgui::Label::create();
+                        labelSelectionPanel->setText("Object with id: 1");
+                        labelSelectionPanel->setPosition("20%", "5");
+                        // labelSelectionPanel->setTextSize(30); // Set font size
+                        // labelSelectionPanel->setTextColor(sf::Color::White); // Set text color
+                        panel->add(labelSelectionPanel);
+
+                        // input field creation
+                        auto inputSelectionPanel = tgui::EditBox::create();
+                        inputSelectionPanel->setPosition("20%", "20");
+                        inputSelectionPanel->setSize("30%", "20");
+                        inputSelectionPanel->setDefaultText("Place holder"); // Default text inside the input field
+                        // inputSelectionPanel->setTextSize(20); // Font size for the text inside the input field
+                        panel->add(inputSelectionPanel);
+
+                        // button creation
+                        auto buttonSelectionPanel = tgui::Button::create();
+                        buttonSelectionPanel->setSize(20, 20);
+                        buttonSelectionPanel->setPosition("90%", "20");
+                        panel->add(buttonSelectionPanel);
+
+
                         // get object in actual dynamic sparase set with objects
                         // this will not work, because if object is not ship, it will blow up
                         int type = mapGameObject.getTypeObject(elem);
@@ -648,17 +799,22 @@ int main()
 
                         }
                         
+                        // gui adding to panel
+                        // adding to panel
+                        panelSelection->add(panel);
 
+                        //selectionPannels.insert(count, panel);
+
+                        // gui spacing and inserting counter
+                        count += 1;
                     }
 
-                    
-
-
-                    //.push_back(star.id);
-                }
-
                 // iterate throw positions in
+                    if (selectedObjects.size() > 0) {
+                    sound.setBuffer(bufferSelectingUnits);
+                    sound.play();
 
+                }
             }
 
             // logic of zooming
@@ -717,9 +873,9 @@ int main()
         for (size_t i = 0; i < mapGameObject.movingShips.size(); ++i)
         {
             const auto& elem = movingShips[i];
-            std::cout << "Current element in moving ships: " << elem << std::endl;
+            //std::cout << "Current element in moving ships: " << elem << std::endl;
             int ship_id = mapGameObject.movingShips.get(elem);
-            std::cout << "Got the ship id: " << ship_id << std::endl;
+            //std::cout << "Got the ship id: " << ship_id << std::endl;
 
             int sectorX = (mapGameObject.allShips.get(elem).pos.x) / mapGameObject.sectorSize;
             int sectorY = (mapGameObject.allShips.get(elem).pos.y) / mapGameObject.sectorSize;
@@ -832,10 +988,10 @@ int main()
         window.draw(time_text);
 
         if (mapGameObject.selectedStars.size() < 1 && mapGameObject.selectedShips.size() < 1) {
-            panel->setVisible(false);
+            panelSelection->setVisible(false);
         }
         else {
-            panel->setVisible(true);
+            panelSelection->setVisible(true);
         }
 
 
