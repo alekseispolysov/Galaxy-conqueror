@@ -117,7 +117,7 @@ int main()
 
 
     // selection pannel
-    auto panel = tgui::Panel::create();
+    auto panel = tgui::ScrollablePanel::create(); 
     panel->setSize(sizeWin.x / 5.6, sizeWin.y / 1.5);
     panel->setPosition(150, 150);
     panel->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
@@ -127,6 +127,14 @@ int main()
     picture->setSize(panel->getSize().x - 40, 150);  // Image size
     picture->setPosition(20, 20);  // Position inside the panel
     panel->add(picture);
+
+    // testing puproposes of scrollabel pannelad
+    for (int i = 0; i < 20; ++i) {
+        auto button = tgui::Button::create("Button " + std::to_string(i + 1));
+        button->setSize({ "90%", "10%" });
+        button->setPosition("5%", (150 + 30 + 10 + i * 60)); // Position dynamically
+        panel->add(button);
+    }
 
     // initially dark and not here
     panel->setVisible(false);
@@ -405,6 +413,7 @@ int main()
             sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window); 
             sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
 
+            // if we are over gui element
             bool isOverGui;
             tgui::Widget::Ptr widget = gui.getWidgetAtPos(sf::Vector2f(mouseWindowPos.x, mouseWindowPos.y), true);
             if (widget) {
@@ -416,11 +425,9 @@ int main()
                 //std::cout << isOverGui << std::endl;
             }
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isOverGui) {
-                
-
-                
-
+            // sf::Event::MouseButtonReleased how do I detect this?
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isOverGui && event.mouseButton.button == sf::Mouse::Left) {
+           
                 // selection with control
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     // inside selected?
@@ -518,13 +525,14 @@ int main()
 
             bool selectionClear = true;
             // selection without control
-            if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.type == sf::Event::MouseButtonPressed && !isOverGui) {
                 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     selectionClear = false;
                 }
 
                 if (selectionClear && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    std::cout << "Cleaned selection" << std::endl;
                     mapGameObject.cleanSelection();
                 }
 
@@ -536,7 +544,7 @@ int main()
                 mouseStilPressed = true;
                 
 
-                if (event.mouseButton.button == sf::Mouse::Right) {
+                if (event.mouseButton.button == sf::Mouse::Right && !isOverGui) {
                     //std::cout << "Coordinates of mouse:" << event.mouseButton.x << " X, " << event.mouseButton.y << " Y.\n";
                     // it's printing the coordinates of window. Question is, how do I get real coordinates?
 
@@ -655,7 +663,7 @@ int main()
 
             // logic of zooming
             // #todo add maximum zooming and minimum zooming (done)
-            if (event.type == sf::Event::MouseWheelScrolled) 
+            if (event.type == sf::Event::MouseWheelScrolled && !isOverGui)
             {
                 if (event.mouseWheelScroll.delta > 0) { 
                     // Zoom in (scale the view by 0.9)
@@ -733,7 +741,7 @@ int main()
             }
 
             // this don't work as it should
-            // this selects only ships, not stars, so it is not working
+            // now it detects stars and ships
             DynamicSparseSet<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 15, elem);
             //std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
             if (nearbyObjects.size() > 0) {
