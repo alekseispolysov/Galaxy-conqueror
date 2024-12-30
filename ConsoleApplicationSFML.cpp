@@ -612,7 +612,46 @@ int main()
 
                     sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
 
-                   
+                    // check if mouse position is in star
+                    //auto cell = mapGameObject.grid.find({ std::pair<int, int>(static_cast<int>(mouseWorldPos.x) , static_cast<int>(mouseWorldPos.y))});
+                    
+                    auto cell = mapGameObject.queryHashMap(mouseWorldPos, 3, 0);
+                    
+                    std::cout << "This is what static_cast:" << static_cast<int>(mouseWorldPos.x) << ", " << static_cast<int>(mouseWorldPos.y) << std::endl;
+                    //if (cell != mapGameObject.grid.end()) {
+                    
+                    for (size_t i = 0; i < cell.size(); ++i)
+                    {
+                        int obj_id = cell.getElements()[i];
+
+                        int objectType = mapGameObject.getTypeObject(obj_id);
+                            if (objectType == 1) {
+                                sf::Vector2f pos = mapGameObject.getObjectPosition(obj_id);
+                                mouseWorldPos.x = pos.x;
+                                mouseWorldPos.y = pos.y;
+                            }
+
+                    }
+
+                        std::cout << "something is in grid" << std::endl;
+                        //for (auto& elem : cell) {
+                        //    // check if object id is equal to star and if it is get its position
+                        //    int objectType = mapGameObject.getTypeObject(elem);
+                        //    if (objectType == 1) {
+                        //        sf::Vector2f pos = mapGameObject.getObjectPosition(elem);
+                        //        mouseWorldPos.x = pos.x;
+                        //        mouseWorldPos.y = pos.y;
+                        //    }
+
+                        //}
+                    //}
+
+                    // iterate throw cell and check, if it contains star object
+                    /*for (auto elem : cell) {
+
+                    }*/
+
+
                     // that is how I can iterate throw selectedShips
                     for (const auto& elem : mapGameObject.selectedShips.getElements())
                     {
