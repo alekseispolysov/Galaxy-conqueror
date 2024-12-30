@@ -33,6 +33,10 @@ bool compareArrays(const int a[2], const int b[2]) {
 }
 
 
+// Variables
+bool soundOn = false;
+
+
 int main()
 {
     std::cout << "Application has started\n";
@@ -100,17 +104,20 @@ int main()
     
     // load sounds here
     sf::SoundBuffer bufferSelectingUnits;
+    sf::SoundBuffer bufferSendingShips;
+    if (soundOn) {
+
+    
     if (!bufferSelectingUnits.loadFromFile("Sounds/Units/rollover1.ogg")) {
         std::cerr << "Error loading selecting ship sound file" << std::endl;
         return -1; // Handle error
     }
 
-    sf::SoundBuffer bufferSendingShips;
     if (!bufferSendingShips.loadFromFile("Sounds/Units/Ship flying.wav")) {
         std::cerr << "Error loading sending ship sound file" << std::endl;
         return -1; // Handle error
     }
-
+    }
     // creating sound object
     sf::Sound sound; 
     //sound.setBuffer(buffer); for playing
@@ -620,7 +627,7 @@ int main()
                         std::cout << "Now not error" << std::endl;
                     }
 
-                    if (mapGameObject.selectedShips.size() > 0) {
+                    if (mapGameObject.selectedShips.size() > 0 && soundOn) {
                         sound.setBuffer(bufferSendingShips); 
                         sound.play(); 
                     }
@@ -810,7 +817,7 @@ int main()
                     }
 
                 // iterate throw positions in
-                    if (selectedObjects.size() > 0) {
+                    if (selectedObjects.size() > 0 && soundOn) {
                     sound.setBuffer(bufferSelectingUnits);
                     sound.play();
 
