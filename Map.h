@@ -95,6 +95,7 @@ public:
 
 	void visualizeHashMapFill(sf::RenderWindow& win);
 	std::vector<std::pair<int, int>> getOccupiedCells(sf::Vector2f position, sf::Vector2f size);
+	std::vector<std::pair<int, int>> getOccupiedCellsForCircle(sf::Vector2f position, float radius);
 	std::vector<std::pair<int, int>> getFilledCells(sf::Vector2f position, sf::Vector2f size);
 	void updateObjectPosition(int objectID, sf::Vector2f oldPosition, sf::Vector2f newPosition);
 	DynamicSparseSet<int> queryHashMap(sf::Vector2f position, float radius, int originId); 
@@ -163,6 +164,7 @@ public:
 	void cleanSelection();
 	//std::vector <VariantType> checkColisionForAllShips();
 	bool colisionCheck(int originID, int otherID);
+	bool colisionPointCheck(int originID, sf::Vector2f& position);
 	void printSectors();
 	void determineSectorsForObjects();
 	std::tuple<bool, int> collisionBetweenSectors(int ship_id, int sector_id);

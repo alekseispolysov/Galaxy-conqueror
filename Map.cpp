@@ -104,7 +104,7 @@ void Map::visualizeHashMapFill(sf::RenderWindow& win)
 		win.draw(rect);
 	}
 }
-
+// for rectangle shapes
 std::vector<std::pair<int, int>> Map::getOccupiedCells(sf::Vector2f position, sf::Vector2f size)
 {
 	 std::vector<std::pair<int, int>> occupiedCells;
@@ -122,6 +122,35 @@ std::vector<std::pair<int, int>> Map::getOccupiedCells(sf::Vector2f position, sf
 
 	 return occupiedCells;
 }
+// for circular shapes:
+std::vector<std::pair<int, int>> Map::getOccupiedCellsForCircle(sf::Vector2f position, float radius) {
+	std::vector<std::pair<int, int>> occupiedCells;
+
+	// Calculate the bounding box of the circle
+	int minX = static_cast<int>(std::floor((position.x - radius) / cellSize));
+	int maxX = static_cast<int>(std::floor((position.x + radius) / cellSize));
+	int minY = static_cast<int>(std::floor((position.y - radius) / cellSize));
+	int maxY = static_cast<int>(std::floor((position.y + radius) / cellSize));
+
+	// Iterate through all grid cells in the bounding box
+	for (int x = minX; x <= maxX; ++x) {
+		for (int y = minY; y <= maxY; ++y) {
+			// Check if the grid cell intersects with the circle
+			sf::Vector2f cellCenter((x + 0.5f) * cellSize, (y + 0.5f) * cellSize); // Center of the cell
+			float dx = position.x - cellCenter.x;
+			float dy = position.y - cellCenter.y;
+
+			// Check if the cell is within the circle's radius
+			float distanceSquared = dx * dx + dy * dy;
+			if (distanceSquared <= radius * radius) {
+				occupiedCells.emplace_back(x, y);
+			}
+		}
+	}
+
+	return occupiedCells;
+}
+
 
 std::vector<std::pair<int, int>> Map::getFilledCells(sf::Vector2f position, sf::Vector2f size)
 {
@@ -210,10 +239,10 @@ DynamicSparseSet<int> Map::queryHashMap(sf::Vector2f position, float radius, int
 				// for list in grid cell
 				for (int& objectID : grid[cell]) {
 					// get object in position
-					sf::Vector2f objectPosition = getObjectPosition(objectID); // Fetch object position.
-					float distanceSquared = (position.x - objectPosition.x) * (position.x - objectPosition.x) +
-						(position.y - objectPosition.y) * (position.y - objectPosition.y);
-					if (distanceSquared <= radiusSquared) {
+					//sf::Vector2f objectPosition = getObjectPosition(objectID); // Fetch object position.
+					//float distanceSquared = (position.x - objectPosition.x) * (position.x - objectPosition.x) +
+					//	(position.y - objectPosition.y) * (position.y - objectPosition.y);
+					//if (distanceSquared <= radiusSquared) {
 						// I don't understand, why is that thing working like that?
 						// if distant, based on position, that we are detecting
 						if (originID != objectID) {
@@ -222,7 +251,7 @@ DynamicSparseSet<int> Map::queryHashMap(sf::Vector2f position, float radius, int
 
 							}
 						}
-					}
+					//}
 				}
 			}
 		}
@@ -392,7 +421,8 @@ void Map::addStar(StarSystem star)
 	star_id_count += 1;
 
 	// inserting star into multiple cells
-	auto occupiedCells = getOccupiedCells(sf::Vector2f(star.starXposMap, star.starYposMap), sf::Vector2f(star.radius, star.radius));
+	//auto occupiedCells = getOccupiedCells(sf::Vector2f(star.starXposMap, star.starYposMap), sf::Vector2f(star.radius, star.radius));
+	auto occupiedCells = getOccupiedCellsForCircle(sf::Vector2f(star.starXposMap, star.starYposMap), star.radius);
 	for (const auto& cell : occupiedCells) {
 		grid[cell].push_back(star.id);
 	}
@@ -507,10 +537,52 @@ bool Map::colisionCheck(int originID, int otherID)
 	if (allShips.contains(otherID)) {
 		return allShips.get(originID).shipSprite.getGlobalBounds().intersects(allShips.get(otherID).shipSprite.getGlobalBounds());
 	}
-	else if (stars.contains(otherID)){
-		return false;
+	if (stars.contains(otherID)) {
+		// Circle (star) vs. Rectangle (ship)
+		auto& star = stars.get(otherID);
+		auto& ship = allShips.get(originID);
+
+		// Circle center
+		float circleX = star.star.getPosition().x + star.star.getRadius();
+		float circleY = star.star.getPosition().y + star.star.getRadius();
+		float radius = star.star.getRadius();
+
+		// Rectangle bounds
+		float rectX = ship.shipSprite.getGlobalBounds().left;
+		float rectY = ship.shipSprite.getGlobalBounds().top;
+		float rectWidth = ship.shipSprite.getGlobalBounds().width;
+		float rectHeight = ship.shipSprite.getGlobalBounds().height;
+
+		// Find the closest point on the rectangle to the circle
+		float closestX = std::clamp(circleX, rectX, rectX + rectWidth);
+		float closestY = std::clamp(circleY, rectY, rectY + rectHeight);
+
+		// Calculate the distance from the circle center to the closest point
+		float dx = circleX - closestX;
+		float dy = circleY - closestY;
+		float distanceSquared = dx * dx + dy * dy;
+
+		// Check if the distance is less than or equal to the circle's radius
+		return distanceSquared <= radius * radius;
 	}
 
+	return false;
+}
+
+bool Map::colisionPointCheck(int originID, sf::Vector2f& position)
+{
+	//getTypeObject
+	if (getTypeObject(originID) == 2) {
+		return allShips.get(originID).shipSprite.getGlobalBounds().contains(position);
+	}
+	if (getTypeObject(originID) == 1) {
+		// Star collision (use true circular collision detection)
+		auto& star = stars.get(originID);
+		float dx = star.star.getPosition().x + star.star.getRadius() - position.x;
+		float dy = star.star.getPosition().y + star.star.getRadius() - position.y;
+		float distanceSquared = dx * dx + dy * dy;
+		return distanceSquared <= (star.star.getRadius() * star.star.getRadius());
+	}
 
 
 	return false;

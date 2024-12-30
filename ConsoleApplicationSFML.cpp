@@ -39,7 +39,7 @@ bool soundOn = false;
 
 int main()
 {
-    std::cout << "Application has started\n";
+    //std::cout << "Application has started\n";
     // Создаем окно с размерами 800x600 и названием "SFML Test"   , sf::Style::Fullscreen
     // everything about video setting we will find here
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Star Strategy Game");
@@ -306,18 +306,18 @@ int main()
     mapGameObject.addShip(superShip);
     mapGameObject.addShip(newShip);
 
-    std::cout << "Can go far there" << std::endl;
+    //std::cout << "Can go far there" << std::endl;
     for (size_t i = 0; i < mapGameObject.allShips.size(); ++i)
     {
         // get id of the ship
 
         int ship_id = mapGameObject.allShips.getElements()[i].id;
         // when got id, then use it as it should be used
-        std::cout << "err not happend yet" << std::endl;
+        //std::cout << "err not happend yet" << std::endl;
         mapGameObject.allShips.get(ship_id).Display(window);
     }
     // THIS IS EXAMPLE -------------------------------------------------------------
-    std::cout << "we are pass this loop" << std::endl;
+    //std::cout << "we are pass this loop" << std::endl;
     //mapGameObject.determineSectorsForObjects();
     // define clocks
 
@@ -430,7 +430,7 @@ int main()
 
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
-                    std::cout << "\nWindows closed by Escape key";
+                    //std::cout << "\nWindows closed by Escape key";
                 }
             }
             // resize logic
@@ -616,15 +616,15 @@ int main()
                     // that is how I can iterate throw selectedShips
                     for (const auto& elem : mapGameObject.selectedShips.getElements())
                     {
-                        std::cout << "Now error" << std::endl;
+                        //std::cout << "Now error" << std::endl;
                         int ship_id = mapGameObject.selectedShips.get(elem);
                         if (!mapGameObject.allShips.get(elem).inMotion) {
                             mapGameObject.movingShips.insert(ship_id, ship_id);
-                            std::cout << "Inserted ship into moving objects, ship id: " << ship_id << std::endl;
+                            //std::cout << "Inserted ship into moving objects, ship id: " << ship_id << std::endl;
                         }
-                        std::cout << "Set new target for selected ship, ship id: " << ship_id << std::endl;
+                        //std::cout << "Set new target for selected ship, ship id: " << ship_id << std::endl;
                         mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
-                        std::cout << "Now not error" << std::endl;
+                        //std::cout << "Now not error" << std::endl;
                     }
 
                     if (mapGameObject.selectedShips.size() > 0 && soundOn) {
@@ -927,9 +927,11 @@ int main()
                     bool collides = mapGameObject.colisionCheck(elem, nearbyElement);
 
                     if (collides) {
-
+                        std::cout << "at least we are coliding" << std::endl;
+                        std::cout << "Type number of itself:" << objectTypeThis << std::endl;
+                        std::cout << "Type number of object nearby:" << objectTypeNearby << std::endl;
                         // making ships destroyable
-                        if (objectTypeThis == objectTypeNearby == 1) {
+                        if (objectTypeThis == 2 && objectTypeNearby == 2) {
                             // if other ships has other team, then I will make them destroy each other for now... 
                             int thisTeam = mapGameObject.allShips.get(elem).teamID;
                             int otherTeam = mapGameObject.allShips.get(nearbyElement).teamID;
@@ -943,9 +945,26 @@ int main()
                             }
 
                         }
+                        //std::cout << "Can get here" << std::endl;
+                        if (objectTypeThis == 2 && objectTypeNearby == 1) {
+                            //std::cout << "Coliding with star" << std::endl;
+                           
+                            // check if ships target colides with star
+                            if (mapGameObject.colisionPointCheck(nearbyElement, mapGameObject.allShips.get(ship_id).endPos)) {
+                                std::cout << "Target is in the star" << std::endl;
+                                // check teams
+                                
 
-                        if (objectTypeThis == 1 && objectTypeNearby == 2) {
-                            std::cout << "Coliding with star" << std::endl;
+                                // put ship into star objects list
+                                mapGameObject.stars.get(nearbyElement).ships.insert(ship_id, ship_id); 
+
+                                mapGameObject.allShips.get(ship_id).visiable = false;
+
+                                // make visability - false
+
+
+                            }
+
                         }
 
                     }

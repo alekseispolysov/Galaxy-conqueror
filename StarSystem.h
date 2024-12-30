@@ -17,9 +17,10 @@ public:
 	float radius;
 	// connections array
 	// I think it would be a graph
+	// is this really necesery? Should I just use ids of the other stars?
 	std::vector<StarSystem*> connections;
 
-	
+	DynamicSparseSet<int> ships;
 
 	std::string name;
 	sf::Color starColor;
