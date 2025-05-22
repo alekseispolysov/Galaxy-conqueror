@@ -49,6 +49,8 @@ void main()
     // Calculate fade factor: brightest at center, black at edge
     float factor = 1.0 - (dist / adjustedRadius) ; // Normalize fade from center to edge - (dist / adjustedRadius)
     factor = clamp(factor, 0.0, 1.0);     // Ensure factor stays in range [0, 1]
+    factor = smoothstep(0.0, 0.85, factor);  // Optional: smooth fade
+    //factor = max(factor, 0.95); // Force center to be at least 0.95 alpha
 
     // Interpolate the color
     vec3 gradientColor = color; // if I want to change it back to vect free and constant vel. I will just add * factor and replace factor in gl_fragColor to 1.0

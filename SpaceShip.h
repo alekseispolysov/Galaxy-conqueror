@@ -20,6 +20,7 @@ public:
     int sector[2];
     int id;
     int teamID;
+    int home_node;
     
     std::string team = ("base_team");
     
@@ -31,16 +32,20 @@ public:
 
 
     bool visiable = true;
+    bool freeFly;
     float damage;
     float health;
     float fuel;
+
     sf::Texture* shipTexutre;
     sf::Sprite shipSprite;
     sf::Vector2f spriteSize;
+    
+    std::vector<sf::Vector2f> MemoryPath;
     // replace vector with 2D coordinates array. If ship path is reset, then it just resets array. Ship path can only be set by stars
     //std::vector<StarSystem*> path;
 
-    SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int teamID, int id=0);
+    SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int teamID, int home_node, bool freFly=false, int id = 0);
 
     ~SpaceShip();
 
@@ -52,13 +57,22 @@ public:
     // drawing function
     void Display(sf::RenderWindow& win);
 
-    void setNewTarget(sf::Vector2f position);
+    void setNewTarget(sf::Vector2f position, bool newCords);
+    void setNewTarget();
+
+    void UpdateTargetList(std::vector<sf::Vector2f> cordList); 
+
+
+
 
     // flying to another star function (or to place on the map)
     // flying to another position. In the future, this function would be remade to only allow it between stars
     void Move(float deltaTime);
     // turning function
     void Turn(float angle);
+
+    
+
 
 
 private:

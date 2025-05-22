@@ -1,24 +1,24 @@
-﻿// ConsoleApplicationSFML.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
+﻿#include <iostream>
+#include <any>
 #include <variant>
 #include <algorithm>
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <TGUI/TGUI.hpp>
-#include <TGUI/Core.hpp>          // Core system for GUI management
-#include <TGUI/Widgets/Button.hpp> // Include specific widget headers, like Button
+#include <TGUI/Core.hpp>        
+#include <TGUI/Widgets/Button.hpp> 
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include <tuple>
 #include "DynamicSparseSet.h"
 #include "StarSystem.h"
 #include "Map.h"
 #include "SpaceShip.h"
+#include "Team.h"
+#include "Particle.h"
 #include <unordered_map>
 #include <cmath>
-#include <utility>  // For std::pair
+#include <utility>  
 
 
 
@@ -26,22 +26,22 @@
 bool compareArrays(const int a[2], const int b[2]) {
     for (int i = 0; i < 2; ++i) {
         if (a[i] != b[i]) {
-            return false; // Found a difference
+            return false; 
         }
     }
-    return true; // All elements match
+    return true; 
 }
 
 
-// Variables
-bool soundOn = false;
+
+
+// Variables for debug
+bool soundOn = true;
 
 
 int main()
 {
-    //std::cout << "Application has started\n";
-    // Создаем окно с размерами 800x600 и названием "SFML Test"   , sf::Style::Fullscreen
-    // everything about video setting we will find here
+    
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Star Strategy Game");
     
     sf::Vector2u sizeWin = window.getSize();
@@ -51,7 +51,6 @@ int main()
     // setting view
     sf::View view(sf::FloatRect(-static_cast<int>(window.getSize().x/4), -static_cast<int>(window.getSize().y/4), window.getSize().x, window.getSize().y));
     window.setView(view);
-    //view.setSize(800, 600);
 
     float zoomFactor = 1.0f;
 
@@ -63,14 +62,6 @@ int main()
     }
     shaderStar.setUniform("zoomFactor", zoomFactor); 
 
-
-
-    
-
-
-    
-    // Loading all textures and images
-    // loading background screen
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Images/background/bg1.jpg")) {
         std::cerr << "Failed to load backgoround Image!" << std::endl;
@@ -78,21 +69,21 @@ int main()
     }
     sf::Sprite backgroundSprite;
     backgroundSprite.setTexture(backgroundTexture);
-    sf::IntRect textureRect(200, 200, 800, 600); // x, y, width, height
+    sf::IntRect textureRect(200, 200, 800, 600);
     backgroundSprite.setTextureRect(textureRect);
 
-    //place holder texture
-    //"Images/Placeholder/Background-1.jpg"
     sf::Texture sharedTexturePlaceholderPic;
     if (!sharedTexturePlaceholderPic.loadFromFile("Images/Placeholder/Background-1.jpg")) {
         std::cerr << "Failed to load texture!" << std::endl;
         return -1;
     }
 
-    
-    //sharedTexturePlaceholderPic.loadFromFile("Images/Placeholder/Background-1.jpg");
-    
-    
+    // texture for explosion:
+    sf::Texture explosionTexture;
+    if (!explosionTexture.loadFromFile("Images/Particles/Explosion/explosion 3.png")) {
+        std::cerr << "Failed to load explosion texture!" << std::endl;
+        return -1;
+    }
 
 
     sf::Texture shipImageTexture;
@@ -100,7 +91,6 @@ int main()
         std::cerr << "Failed to load Ship Image!" << std::endl;
         return -1;
     }
-    //sf::Sprite shipImageSprite;
     
     // load sounds here
     sf::SoundBuffer bufferSelectingUnits;
@@ -110,20 +100,16 @@ int main()
     
     if (!bufferSelectingUnits.loadFromFile("Sounds/Units/rollover1.ogg")) {
         std::cerr << "Error loading selecting ship sound file" << std::endl;
-        return -1; // Handle error
+        return -1; 
     }
 
     if (!bufferSendingShips.loadFromFile("Sounds/Units/Ship flying.wav")) {
         std::cerr << "Error loading sending ship sound file" << std::endl;
-        return -1; // Handle error
+        return -1; 
     }
     }
     // creating sound object
     sf::Sound sound; 
-    //sound.setBuffer(buffer); for playing
-    //sound.play();
-
-
 
     // loading font for text
     sf::Font font;
@@ -142,54 +128,39 @@ int main()
     // loading complete
 
     // GUI creation and set settings
-    tgui::Gui gui(window); // selection menu  /////////////////////////////do all tgui manipulation after load backend!!! //////////
+    tgui::Gui gui(window); 
 
-
-    /*tgui::Texture tguiSharedTexture;
-    tguiSharedTexture.load(sharedTexturePlaceholderPic);*/
     tgui::Texture tguiSharedTexture;
     tguiSharedTexture.loadFromPixelData(
-        sharedTexturePlaceholderPic.getSize(),               // Size of the texture
-        sharedTexturePlaceholderPic.copyToImage().getPixelsPtr() // Pointer to the pixel data
+        sharedTexturePlaceholderPic.getSize(),               
+        sharedTexturePlaceholderPic.copyToImage().getPixelsPtr() 
+    );
+
+    tgui::Texture tguishipTextureShared;
+    tguishipTextureShared.loadFromPixelData(
+        shipImageTexture.getSize(),               
+        shipImageTexture.copyToImage().getPixelsPtr()
     );
 
     // preparing icons for UI
     sf::IntRect chatIconRect(0, 0, 16, 16);
-    // Load the texture into TGUI::Texture using the sub-rectangle
-    auto textureFilePath = "images/Icons and UI/tilemap_packed.png"; // Path to the sprite sheet
-    //tgui::Texture tguiTexture(textureFilePath, { chatIconRect.left, chatIconRect.top, chatIconRect.width, chatIconRect.height });
-    // Load the texture into TGUI::Texture
-    //tgui::Texture tguiTexture("images/Icons and UI/tilemap_packed.png");
-
-    //tguiTexture.setSubRect(chatIconRect);
-    //sf::Image subImage = iconsSpreadsheet.copyToImage();
-    //subImage = subImage.copy(chatIconRect.left, chatIconRect.top, chatIconRect.width, chatIconRect.height);
-
+    auto textureFilePath = "images/Icons and UI/tilemap_packed.png"; 
 
     // selection pannel
     auto panelSelection = tgui::ScrollablePanel::create(); 
     panelSelection->setSize(sizeWin.x / 5.6, sizeWin.y / 1.5);
     panelSelection->setPosition(150, 150);
-    panelSelection->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); // Light blue color
+    panelSelection->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 125)); 
     gui.add(panelSelection);
 
     auto picture = tgui::Picture::create("Images/Placeholder/SpaceBackground-3.jpg");
-    picture->setSize(panelSelection->getSize().x - 40, 150);  // Image size
-    picture->setPosition(20, 20);  // Position inside the panel
+    picture->setSize(panelSelection->getSize().x - 40, 150);  
+    picture->setPosition(20, 20);  
     panelSelection->add(picture);
 
     DynamicSparseSet<tgui::Panel::Ptr> selectionPannels;
-
-    // testing puproposes of scrollabel pannelad
     
-
-    // initially dark and not here
     panelSelection->setVisible(false);
-
-    /*auto button = tgui::Button::create("Click Me");
-    button->setSize(150, 100);
-    button->setPosition(150, 100);
-    gui.add(button);*/
 
     // settings menu button on the top
     auto settingsMenuButton = tgui::Button::create("...");
@@ -198,30 +169,14 @@ int main()
     settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255, 255));
     
 
-    //settingsMenuButton->setTexture(iconTexture);
-    /*tgui::Texture tguiPicture; 
-    tguiPicture.loadFromPixelData(sfPicture.getSize(), sfPicture.copyToImage().getPixelsPtr());
-    auto picture = tgui::Picture::create(std::move(tguiPicture));*/
-
-    //sf::Image iconImage = iconSprite.getTexture()->copyToImage();  // Get the image from sprite 
-
-    //tguiTexture.setData(sfTexture);
-    //tgui::Texture tguiTexture(iconTexture);
     sf::Texture croppedTexture;
     croppedTexture.loadFromImage(iconsSpreadsheet.copyToImage(), sf::IntRect(80, 128, 16, 16));
 
     tgui::Texture chatIcon;
     chatIcon.loadFromPixelData(croppedTexture.getSize(), croppedTexture.copyToImage().getPixelsPtr());
 
-    //chatIcon.~Texture
-
-
-    //tguiTexture.loadFromPixelData(tguiTexture.getImageSize(), );
     settingsMenuButton->getRenderer()->setTexture(chatIcon);
-    //settingsMenuButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
-    //settingsMenuButton->getRenderer()->
-    
-    //settingsMenuButton->getRenderer()->setTexture(iconsSpreadsheet);
+ 
     gui.add(settingsMenuButton);
 
     // chat button in bottom left cornder
@@ -231,50 +186,68 @@ int main()
     chatButton->getRenderer()->setBackgroundColor(tgui::Color(100, 150, 255));
     gui.add(chatButton);
 
-    // GUI settings end
+    // Object with all game logic
+    Map mapGameObject = Map(sf::Vector2f(800.0f, 600.0f));
 
-    // first star object
-
-
-    // logic of creating objects
-
+    // debug red dot
     sf::CircleShape dot(3);
     dot.setFillColor(sf::Color::Red);
     dot.setPosition(400, 300);
 
-    //shaderStar.setUniform("fadeFactor", 0.5f); // Adjust fade sharpness
+    // create three teams
+    Team team1 = Team(1, sf::Color(0, 255, 0));
+    Team team2 = Team(2, sf::Color(255, 165, 0));
+    Team rebels = Team(0, sf::Color(255, 255, 255));
 
-    // second star object
-    StarSystem star1 = StarSystem(450, 350, 30, sf::Color::Red, "Spira");
-    StarSystem star2 = StarSystem(400, 300, 20, sf::Color::White, "Rius");
-    StarSystem star3 = StarSystem(100, 100, 20, sf::Color::Green, "Sagitarius");
-    StarSystem star4 = StarSystem(120, 150, 40, sf::Color::Green, "Oloma");
-    StarSystem star5 = StarSystem(300, 100, 60, sf::Color::Yellow, "Abarak");
-    StarSystem star6 = StarSystem(310, 230, 60, sf::Color::White, "Yrokoj");
+    DynamicSparseSet<Team> teams;
+    teams.insert(team1.team_id, team1);
+    teams.insert(team2.team_id, team2);
+    teams.insert(rebels.team_id, rebels);
+
+    StarSystem star1 = StarSystem(450, 350, 30, team2.team_id, team2.teamColor, "Spira");
+    StarSystem star2 = StarSystem(400, 300, 20, rebels.team_id, rebels.teamColor, "Rius");
+    StarSystem star3 = StarSystem(100, 100, 20, team1.team_id, team1.teamColor, "Sagitarius");
+    StarSystem star4 = StarSystem(120, 150, 40, team1.team_id, team1.teamColor, "Oloma");
+    StarSystem star5 = StarSystem(300, 100, 60, rebels.team_id, rebels.teamColor, "Abarak");
+    StarSystem star6 = StarSystem(310, 230, 60, rebels.team_id, rebels.teamColor, "Yrokoj");
+    StarSystem star7 = StarSystem(500, 500, 30, team2.team_id, team2.teamColor, "Sardy");
     
-    star1.ConnectTo(&star2);
-    star2.ConnectTo(&star6);
-    star4.ConnectTo(&star5); 
-    star6.ConnectTo(&star5); 
-    star6.ConnectTo(&star4); 
-    star3.ConnectTo(&star4); 
-    star3.ConnectTo(&star5); 
-
-    Map mapGameObject = Map(sf::Vector2f(800.0f, 600.0f));
-  
     mapGameObject.addStar(star1);
     mapGameObject.addStar(star2);
     mapGameObject.addStar(star3);
     mapGameObject.addStar(star4);
     mapGameObject.addStar(star5);
     mapGameObject.addStar(star6);
+    mapGameObject.addStar(star7);
+
+    // add stars to teams:
+    team2.addStarToTeam(star1.id);
+    team2.addStarToTeam(star7.id);
+    team1.addStarToTeam(star3.id);
+    team1.addStarToTeam(star4.id);
+    rebels.addStarToTeam(star2.id);
+    rebels.addStarToTeam(star5.id);
+    rebels.addStarToTeam(star6.id);
+
+    mapGameObject.connect_stars(star1.id, star2.id);
+    mapGameObject.connect_stars(star2.id, star6.id); 
+    mapGameObject.connect_stars(star4.id, star5.id);
+    mapGameObject.connect_stars(star6.id, star5.id);
+    mapGameObject.connect_stars(star6.id, star4.id);
+    mapGameObject.connect_stars(star3.id, star4.id);
+    mapGameObject.connect_stars(star3.id, star5.id);
+    mapGameObject.connect_stars(star7.id, star1.id);
+
+    std::cout << star1.id << std::endl;
+    std::cout << star2.id << std::endl;
+    std::cout << star3.id << std::endl;
+    std::cout << star4.id << std::endl;
+    std::cout << star5.id << std::endl;
+    std::cout << star6.id << std::endl;
 
     sf::CircleShape testShape(30);
     testShape.setFillColor(sf::Color::White);
     testShape.setPosition(20, 500);
-
-    //const int layers = 20;
-    //const float maxRadius = 50;
 
     // creating line in sfml
     sf::Vertex line[] = {
@@ -283,8 +256,6 @@ int main()
     };
 
     // Drawing border of the map
-    // drawing line from one point to other point
-    // point --> point (2 represents line)
     sf::Vertex mapBorder[] = {
         sf::Vertex(sf::Vector2f(0,0), sf::Color::Magenta),
         sf::Vertex(sf::Vector2f(800,0), sf::Color::Magenta),
@@ -296,33 +267,24 @@ int main()
         sf::Vertex(sf::Vector2f(0,0), sf::Color::Magenta),
     };
 
-    SpaceShip rocket = SpaceShip(sf::Vector2f(200.0f, 200.0f), &shipImageTexture, 1);
-    SpaceShip superShip = SpaceShip(sf::Vector2f(170.0f, 150.0f), &shipImageTexture, 1);
-    SpaceShip newShip = SpaceShip(sf::Vector2f(200.0f, 300.0f), &shipImageTexture, 2);
+    SpaceShip rocket = SpaceShip(sf::Vector2f(100.0f, 200.0f), &shipImageTexture, team1.team_id, 3, true);
+    SpaceShip superShip = SpaceShip(sf::Vector2f(100.0f, 120.0f), &shipImageTexture, team1.team_id,2, true);
+    SpaceShip newShip = SpaceShip(sf::Vector2f(300.0f, 300.0f), &shipImageTexture, team2.team_id, 0, true);
+    SpaceShip otherShip = SpaceShip(sf::Vector2f(100.0f, 20.0f), &shipImageTexture, team1.team_id, 2, false);
 
-
-    //
     mapGameObject.addShip(rocket);
     mapGameObject.addShip(superShip);
     mapGameObject.addShip(newShip);
+    mapGameObject.addShip(otherShip);
 
-    //std::cout << "Can go far there" << std::endl;
     for (size_t i = 0; i < mapGameObject.allShips.size(); ++i)
     {
-        // get id of the ship
-
         int ship_id = mapGameObject.allShips.getElements()[i].id;
-        // when got id, then use it as it should be used
-        //std::cout << "err not happend yet" << std::endl;
         mapGameObject.allShips.get(ship_id).Display(window);
     }
-    // THIS IS EXAMPLE -------------------------------------------------------------
-    //std::cout << "we are pass this loop" << std::endl;
-    //mapGameObject.determineSectorsForObjects();
-    // define clocks
+   
 
-    sf::Clock clock; // from here impolimenting object movement
-
+    sf::Clock clock;
     sf::Clock game_time;
 
     sf::Text time_text;
@@ -339,32 +301,36 @@ int main()
     float time_months;
     float time_years;
 
-    //sf::CircleShape sprite(10.f);
-    //sprite.setFillColor(sf::Color::Green);
-    //sprite.setPosition(100.f, 100.f); // Starting position
-
    
     // This is a part of selection logic (rectangle selection)
     sf::Vector2i mouseWindowOnButtonPress;
     bool mouseStilPressed = false;
+    bool continiousSelection = false;
     sf::Vector2i mouseWindowOnButtonRelease;
     sf::RectangleShape mouseBox;
     mouseBox.setFillColor(sf::Color(255, 0, 0, 128));
     mouseBox.setOutlineColor(sf::Color(255, 0, 0));
 
-    // Главный цикл программы
+    // selection logic
+    constexpr float DOUBLE_CLICK_TIME = 0.3f;
+    constexpr float DOUBLE_CLICK_RADIUS = 10.f;
+    sf::Clock double_click_timer;
+    float lastClickTime = -DOUBLE_CLICK_TIME;
+    sf::Vector2f lastClickPos;
+    bool dragging = false;
+    sf::Vector2i dragStart;
+
+
+    // Main loop
     while (window.isOpen())
     {
-        // move it to another class ============================================================
-        //time_text.setPosition(view.getCenter().x / 2, view.getCenter().y / 2); 
         sf::Vector2f curCenter = view.getCenter();
         sf::Vector2u curPosCenter = window.getSize();
         sf::Vector2f viewSize = view.getSize();
-        //sf::Vector2f viewOffset = sf::Vector2f(curCenter.x - curPosCenter.x / 2 , curCenter.y - curPosCenter.y / 2);
         sf::Vector2f viewOffset = sf::Vector2f(curCenter - viewSize / 2.0f);
         time_text.setPosition(viewOffset);
-        // I need to create function, that posistiones to left up corner
-        float time_seconds = game_time.getElapsedTime().asSeconds(); // if i want it run faster just increase it like that * x
+        
+        float time_seconds = game_time.getElapsedTime().asSeconds();
         if (time_seconds >= 60.0f) {
             game_time.restart();
             time_minutes += 1;
@@ -383,22 +349,16 @@ int main()
         time_in_seconds = time_in_seconds.substr(0, 5);
         timeString = std::to_string(time_hours) + ":" + std::to_string(time_minutes) + ":" + time_in_seconds;
 
-        time_text.setString(timeString); // I want clock that are not reset
-        
-        // clock LOGIC -> transfer to another class
-        // move it to another class ===============================================================================
+        time_text.setString(timeString); 
 
 
-
-        // Обработка событий
+        // Event handler
         sf::Event event;
         while (window.pollEvent(event))
         {
             gui.handleEvent(event);
 
-
-
-            // Закрытие окна при нажатии на крестик
+            // Closing window
             if (event.type == sf::Event::Closed){
                 window.close();
             }
@@ -406,14 +366,9 @@ int main()
             else if (event.type == sf::Event::KeyPressed) {
                 // Moving camera
                 if (event.key.code == sf::Keyboard::W) {
-                    view.setCenter(view.getCenter().x, view.getCenter().y - 40);
-                    // I need to do change stars position
-
-                    // test moving of 
-                    
-                    
+                    view.setCenter(view.getCenter().x, view.getCenter().y - 40); 
                 }
-                if (event.key.code == sf::Keyboard::A) {
+                if (event.key.code == sf::Keyboard::A && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     view.setCenter(view.getCenter().x - 40, view.getCenter().y);
                     
                 }
@@ -426,449 +381,511 @@ int main()
                     
                 }
 
+                // Selection wia groups, press 1,2,3,4,5,6,7,8,9,0
+                {
+                    DynamicSparseSet<int> selectedObjects;
+                    if (event.key.code == sf::Keyboard::Num1 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        std::cout << "Pressed 1" << std::endl; 
+                        selectedObjects = mapGameObject.selectGroup(1);
+                    }
+                    if (event.key.code == sf::Keyboard::Num2 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(2);
+                    }
+                    if (event.key.code == sf::Keyboard::Num3 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(3);
+                    }
+                    if (event.key.code == sf::Keyboard::Num4 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(4);
+                    }
+                    if (event.key.code == sf::Keyboard::Num5 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(5);
+                    }
+                    if (event.key.code == sf::Keyboard::Num6 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(6);
+                    }
+                    if (event.key.code == sf::Keyboard::Num7 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(7);
+                    }
+                    if (event.key.code == sf::Keyboard::Num8 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(8);
+                    }
+                    if (event.key.code == sf::Keyboard::Num9 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(9);
+                    }
+                    if (event.key.code == sf::Keyboard::Num0 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.cleanSelection();
+                        selectedObjects = mapGameObject.selectGroup(0);
+                    }
+                    for (size_t j = 0; j < selectedObjects.size(); ++j)
+                    {
+                        std::cout << "Selected element: " << selectedObjects.getElements()[j] << std::endl;
+                        int el_id = selectedObjects.getElements()[j];
+
+                        bool inShips = mapGameObject.allShips.contains(el_id);
+                        bool inStars = mapGameObject.stars.contains(el_id);
+
+                        if (inShips) {
+                            mapGameObject.selectedShips.insert(el_id, el_id);
+                        }
+                        if (inStars) {
+                            mapGameObject.selectedStars.insert(el_id, el_id);
+                        }
+                    }
+
+                    mapGameObject.updateSelectionUI(selectedObjects, panelSelection, tguishipTextureShared, tguiSharedTexture);
+                }
+
+                // selection assigning to groups:
+                {
+                    DynamicSparseSet<int> selectedObjects;
+
+                    for (size_t j = 0; j < mapGameObject.selectedStars.size(); ++j)
+                    {
+                        int star_id = mapGameObject.selectedStars.getElements()[j];
+                        mapGameObject.selectStar(star_id);
+                        selectedObjects.insert(star_id, star_id);
+                    }
+                    for (size_t j = 0; j < mapGameObject.selectedShips.size(); ++j)
+                    {
+                        int ship_id = mapGameObject.selectedShips.getElements()[j];
+                        mapGameObject.selectShip(ship_id);
+                        selectedObjects.insert(ship_id, ship_id);
+
+                    }
+
+                    if (event.key.code == sf::Keyboard::Num1 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        std::cout << "Group assign 1" << std::endl;
+                       
+                    
+                        mapGameObject.updateSelectionGroup(1, selectedObjects);
+
+                    }
+                    if (event.key.code == sf::Keyboard::Num2 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(2, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num3 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(3, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num4 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(4, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num5 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(5, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num6 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(6, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num7 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(7, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num8 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(8, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num9 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(9, selectedObjects);
+                    }
+                    if (event.key.code == sf::Keyboard::Num0 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        mapGameObject.updateSelectionGroup(0, selectedObjects);
+                    }
+                }
+
+                if (event.key.code == sf::Keyboard::A && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+
+                    DynamicSparseSet<int> selectedObjects;
+
+                    for (size_t j = 0; j < mapGameObject.stars.size(); ++j)
+                    {
+                        int star_id = mapGameObject.stars.getElements()[j].id;
+                        mapGameObject.selectStar(star_id);
+                        selectedObjects.insert(star_id, star_id);
+                    }
+                    for (size_t j = 0; j < mapGameObject.allShips.size(); ++j)
+                    {
+                        int ship_id = mapGameObject.allShips.getElements()[j].id;
+                        mapGameObject.selectShip(ship_id);
+                        selectedObjects.insert(ship_id, ship_id);
+
+                    }
+                    mapGameObject.updateSelectionUI(selectedObjects, panelSelection, tguishipTextureShared, tguiSharedTexture);
+
+                }
 
 
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
-                    //std::cout << "\nWindows closed by Escape key";
                 }
             }
-            // resize logic
-            // todo, when I resize, I want to steal in the right place on the map
+
             else if (event.type == sf::Event::Resized) {
-                // when I resize, I change coordinates of view, right here
-                /////////////////////////////////////////////////////////////////
                 view.setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
                 
-                // if I want window go back I do this, but for now just comment this, because it is useless
-                //view.setCenter(static_cast<float>(event.size.width) / 2, static_cast<float>(event.size.height) / 2);
-                
-
                 // Update window size uniforms when the window is resized
                 shaderStar.setUniform("windowHeight", static_cast<float>(event.size.height));
-                //shaderStar.setUniform("windowWidth", static_cast<float>(event.size.width));
-
+                
                 shaderStar.setUniform("zoomFactor", zoomFactor); 
-                // Optional: Update any other uniforms or scaling logic
+              
                 sf::Vector2u windowSize = window.getSize();
                 view.setSize(windowSize.x / zoomFactor, windowSize.y / zoomFactor);
             }
-            //
-
-            // selection logic
-            bool control = false;
             sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window); 
-            sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
+            sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view); 
 
-            // if we are over gui element
+            // check if mouse is over gui
             bool isOverGui;
             tgui::Widget::Ptr widget = gui.getWidgetAtPos(sf::Vector2f(mouseWindowPos.x, mouseWindowPos.y), true);
             if (widget) {
                 isOverGui = true;
-                //std::cout << isOverGui << std::endl;
+                
             }
             else {
                 isOverGui = false;
-                //std::cout << isOverGui << std::endl;
+                
             }
 
-            // sf::Event::MouseButtonReleased how do I detect this?
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isOverGui && event.mouseButton.button == sf::Mouse::Left) {
-           
-                // selection with control
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-                    // inside selected?
-                    // loop throw sheeps and check, if I selected a one
-                    // this will fail
-                    for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
-                    {
-                        int ship_id = mapGameObject.allShips.getElements()[i].id;
-                        //mapGameObject.allShips.get(ship_id).Display(window);
-                        if (mapGameObject.allShips.get(ship_id).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
-                        // select
-                            //int ship_id = mapGameObject.allShips.get(i).id;
+            if (mapGameObject.hoveredObject != -1) {
+                std::any object = mapGameObject.getObject(mapGameObject.hoveredObject);
 
-                            if (mapGameObject.selectedShips.contains(ship_id)) {
-                                mapGameObject.selectedShips.erase(ship_id);
-                                std::cout << "DELTED SHIP WITH CTRL, SHIP ID: " << ship_id << std::endl;
-                                break;
-                            }
-                            else {
-                                mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
-                                std::cout << "ADDED SHIP WITH CTRL, SHIP ID: " << ship_id<< std::endl;
-                                break;
-                            }
-                            // inside selected == true?
-                            
-                            break;
-                        }
+                if (object.type() == typeid(SpaceShip)) {
+                    mapGameObject.allShips.get(mapGameObject.hoveredObject).shipSprite.setColor(mapGameObject.originHoverColor);
+                }
+                else if (object.type() == typeid(StarSystem)) {
+                    mapGameObject.stars.get(mapGameObject.hoveredObject).starColor = mapGameObject.originHoverColor;
+                }
+                
+                mapGameObject.hoveredObject = -1;
+            }
 
+            // hover effect
+            DynamicSparseSet<int> hoverQuery = mapGameObject.queryHashMap(mouseWorldPos, 3, 1);
+            for (size_t i = 0; i < hoverQuery.size(); ++i)
+            {
+                int q_id = hoverQuery.getElements()[i];
+                std::any object = mapGameObject.getObject(q_id); 
+
+                sf::RectangleShape mouseB;
+                mouseB.setSize(sf::Vector2f(3.f, 3.f)); 
+                mouseB.setPosition(sf::Vector2f(mouseWorldPos)); 
+
+
+                if (object.type() == typeid(SpaceShip)) {
+                    SpaceShip ship = std::any_cast<SpaceShip>(object);
+                    if (ship.shipSprite.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                        mapGameObject.hoveredObject = ship.id;
+                        mapGameObject.originHoverColor = ship.shipSprite.getColor();
+                        std::cout << "Space ship: " << mapGameObject.hoveredObject << "/" << ship.id <<  std::endl;
+                        mapGameObject.allShips.get(ship.id).shipSprite.setColor(sf::Color(190, 255, 190, 255));
+                        break;
                     }
-                    for (size_t i = 0; i < mapGameObject.stars.size(); i++)
-                    {
-                        int star_id = mapGameObject.stars.getElements()[i].id;
-                        if (mapGameObject.stars.get(i).star.getGlobalBounds().contains(mouseWorldPos)) {
-                            // select
-                            
-
-                            if (mapGameObject.selectedStars.contains(star_id)) {
-                                mapGameObject.selectedStars.erase(star_id);
-                                std::cout << "DELTED STAR WITH CTRL, STAR_ID: " << star_id << std::endl;
-                                break;
-                            }
-                            else {
-                                mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
-                                std::cout << "ADDED STAR WITH CTRL, STAR_ID: " << star_id << std::endl;
-
-                                break;
-                            }
-                            // inside selected == true?
-
-                        }
-
+                }
+                else if (object.type() == typeid(StarSystem)) {
+                    StarSystem star = std::any_cast<StarSystem>(object);
+                    if (star.star.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                        mapGameObject.originHoverColor = star.starColor;
+                        mapGameObject.stars.get(star.id).starColor = sf::Color(190, 255, 190, 255);
+                        std::cout << "Color of the star after change: " << std::endl;
+                        mapGameObject.hoveredObject = star.id;
+                        break;
                     }
-
-
-                    // loop throw stars and check if I selected a one (in sectors)
                 }
                 else {
+                    mapGameObject.hoveredObject = -1;
+                }
+
+            }
+           
+
+            // start of dragging on press
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                dragging = true;
+                dragStart = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
+                std::cout << dragStart.x << ", " << dragStart.y << std::endl;
+                std::cout << "Now it is preessed \n";
+            }
+
+            // Mouse Release:
+            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                dragging = false;
+                // remove selection if not LControl pressed
+                if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)){
                     mapGameObject.cleanSelection();
-                    // this will fail
-                    for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
-                    {
-                        int ship_id = mapGameObject.allShips.getElements()[i].id;
+                   
+                    auto widgets = panelSelection->getWidgets();
 
-                        if (mapGameObject.allShips.get(ship_id).shipSprite.getGlobalBounds().contains(mouseWorldPos)) {
-                            // select
-                            
-                            mapGameObject.selectObject(ship_id, "ship"); // can I rather make it with booleans?
-                               
-                            // inside selected == true?
-                            std::cout << "SELECTED SHIP AND CLEARED SELECTION, SHIP_ID: " << ship_id << std::endl;
-
-                            break;
-                        }
-
-                    }
-                    for (size_t i = 0; i < mapGameObject.stars.size(); i++)
-                    {
-                        int star_id = mapGameObject.stars.getElements()[i].id;
-                        if (mapGameObject.stars.get(star_id).star.getGlobalBounds().contains(mouseWorldPos)) {
-                            // select
-                            
-                            mapGameObject.selectObject(star_id, "star"); // can I rather make it with booleans?
-                            std::cout << "SELECTED STAR AND CLEARED SELECTION, STAR_ID: " << star_id << std::endl;
-
-                            break;
-                            // inside selected == true?
-
-                        }
-
-                    }
-                }
-                
-                
-            }
-
-            bool selectionClear = true;
-            // selection without control
-            // determine that it is rectangle selection, or not
-            if (event.type == sf::Event::MouseButtonPressed && !isOverGui) {
-                
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-                    selectionClear = false;
-                }
-
-                if (selectionClear && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    std::cout << "Cleaned selection" << std::endl;
-                    mapGameObject.cleanSelection();
-                    //panelSelection->removeAllWidgets();
-
-                    //selectionPannels.clear();
-                    auto widgets = panelSelection->getWidgets(); 
-
-                    // Iterate through the widgets and remove only those of type tgui::Panel
-                    for (const auto& widget : widgets) { 
-                        if (std::dynamic_pointer_cast<tgui::Panel>(widget)) { 
-                            panelSelection->remove(widget); // Remove the panel from the container 
+                    // Iterate through the widgets and remove only those of type tgui::Panel/ clear selection panel
+                    for (const auto& widget : widgets) {
+                        if (std::dynamic_pointer_cast<tgui::Panel>(widget)) {
+                            panelSelection->remove(widget); 
                         }
                     }
-
                 }
+                float timeSinceLastClick = double_click_timer.getElapsedTime().asSeconds() - lastClickTime;
+                double_click_timer.restart();
 
-                //sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
-                //sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
-
-                // detect mouse and write it to vectors
-                mouseWindowOnButtonPress = sf::Vector2i(mouseWorldPos.x ,mouseWorldPos.y);
-                mouseStilPressed = true;
-                
-
-                if (event.mouseButton.button == sf::Mouse::Right && !isOverGui) {
-                    //std::cout << "Coordinates of mouse:" << event.mouseButton.x << " X, " << event.mouseButton.y << " Y.\n";
-                    // it's printing the coordinates of window. Question is, how do I get real coordinates?
-
-                    sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
-
-                    sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
-
-                    // check if mouse position is in star
-                    //auto cell = mapGameObject.grid.find({ std::pair<int, int>(static_cast<int>(mouseWorldPos.x) , static_cast<int>(mouseWorldPos.y))});
-                    
-                    auto cell = mapGameObject.queryHashMap(mouseWorldPos, 3, 0);
-                    
-                    std::cout << "This is what static_cast:" << static_cast<int>(mouseWorldPos.x) << ", " << static_cast<int>(mouseWorldPos.y) << std::endl;
-                    //if (cell != mapGameObject.grid.end()) {
-                    
-                    for (size_t i = 0; i < cell.size(); ++i)
-                    {
-                        int obj_id = cell.getElements()[i];
-
-                        int objectType = mapGameObject.getTypeObject(obj_id);
-                            if (objectType == 1) {
-                                sf::Vector2f pos = mapGameObject.getObjectPosition(obj_id);
-                                mouseWorldPos.x = pos.x;
-                                mouseWorldPos.y = pos.y;
-                            }
-
-                    }
-
-                        std::cout << "something is in grid" << std::endl;
-                        //for (auto& elem : cell) {
-                        //    // check if object id is equal to star and if it is get its position
-                        //    int objectType = mapGameObject.getTypeObject(elem);
-                        //    if (objectType == 1) {
-                        //        sf::Vector2f pos = mapGameObject.getObjectPosition(elem);
-                        //        mouseWorldPos.x = pos.x;
-                        //        mouseWorldPos.y = pos.y;
-                        //    }
-
-                        //}
-                    //}
-
-                    // iterate throw cell and check, if it contains star object
-                    /*for (auto elem : cell) {
-
-                    }*/
-
-
-                    // that is how I can iterate throw selectedShips
-                    for (const auto& elem : mapGameObject.selectedShips.getElements())
-                    {
-                        //std::cout << "Now error" << std::endl;
-                        int ship_id = mapGameObject.selectedShips.get(elem);
-                        if (!mapGameObject.allShips.get(elem).inMotion) {
-                            mapGameObject.movingShips.insert(ship_id, ship_id);
-                            //std::cout << "Inserted ship into moving objects, ship id: " << ship_id << std::endl;
-                        }
-                        //std::cout << "Set new target for selected ship, ship id: " << ship_id << std::endl;
-                        mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos);
-                        //std::cout << "Now not error" << std::endl;
-                    }
-
-                    if (mapGameObject.selectedShips.size() > 0 && soundOn) {
-                        sound.setBuffer(bufferSendingShips); 
-                        sound.play(); 
-                    }
-                    
-                    
-                }
-            }
-
-
-            // check if stil pressed and event key is left:
-            if (mouseStilPressed) {
-                mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
-            }
-
-            if (event.type == sf::Event::MouseButtonReleased) {
-                // selection logic here
-                mouseStilPressed = false;
-                // before I do that, I need always swap coordinates, so function will always work
-                // coordinates needs to be swaped to left up corner
-                if (mouseWindowOnButtonPress.x > mouseWindowOnButtonRelease.x) {
-                    std::swap(mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.x);
-                }
-                if (mouseWindowOnButtonPress.y > mouseWindowOnButtonRelease.y) {
-                    std::swap(mouseWindowOnButtonPress.y, mouseWindowOnButtonRelease.y);
-                }
-
-                // also I don't understand, why am I selecting all cells, instead of cells that having something inside, It is possible, that I don't have this funciton
-                auto relevantCells = mapGameObject.getFilledCells(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y), sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
-                
-                // I will make this cells work, after that I will take up code, that is responsible for
-                // coordinates adjustments
-
-                // get all ids from vectors into set
-                // select
+                bool isDoubleClick = timeSinceLastClick < DOUBLE_CLICK_TIME && std::hypot(mouseWorldPos.x - lastClickPos.x, mouseWorldPos.y - lastClickPos.y) < DOUBLE_CLICK_RADIUS;
+                std::cout << (timeSinceLastClick < DOUBLE_CLICK_TIME) << std::endl;
+                std::cout << "Time sinse last click is: " << timeSinceLastClick << std::endl;
+                lastClickTime = clock.getElapsedTime().asSeconds();
+                lastClickPos = mouseWorldPos;
 
                 DynamicSparseSet<int> selectedObjects;
-                // iterate throw relevant cells
-                int x = 0;
-                // create box of selection
-                sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x, mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
-                selectionBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress));
-                for (const auto& cell : relevantCells) {
-                    auto& objects = mapGameObject.grid[cell];
-                    //std::cout << "Iteration in grid: " << x << std::endl;
-                    x += 1;
-                    
-                    // after this I need to check if it is preciselly inside rectangle
 
-                    // iterate throw vector and insert every found object into set
-                    for (auto& vectorElement : objects)
+                std::vector <std::pair<int, int>> relevantCells;
+
+                //Rectangle selection
+                if (std::abs(mouseWorldPos.x - dragStart.x) > 5 || std::abs(mouseWorldPos.y - dragStart.y) > 5) {
+                    std::cout << "Selection box" << std::endl;
+                    mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
+
+                    if (dragStart.x > mouseWindowOnButtonRelease.x) {
+                        std::swap(dragStart.x, mouseWindowOnButtonRelease.x);
+                    }
+                    if (dragStart.y > mouseWindowOnButtonRelease.y) {
+                        std::swap(dragStart.y, mouseWindowOnButtonRelease.y);
+                    }
+                    relevantCells = mapGameObject.getFilledCells(sf::Vector2f(dragStart.x, dragStart.y), sf::Vector2f(mouseWindowOnButtonRelease.x - dragStart.x, mouseWindowOnButtonRelease.y - dragStart.y));
+                    
+                    int x = 0;
+                    
+                    sf::RectangleShape selectionBox(sf::Vector2f(mouseWindowOnButtonRelease.x - dragStart.x, mouseWindowOnButtonRelease.y - dragStart.y));
+                    selectionBox.setPosition(sf::Vector2f(dragStart));
+                    for (const auto& cell : relevantCells) {
+                        auto& objects = mapGameObject.grid[cell];
+                        x += 1;
+                        for (auto& vectorElement : objects)
+                        {
+                            selectedObjects.insert(vectorElement, vectorElement);
+                        }
+
+
+                    }
+
+
+                }
+                //double click selection
+                else if (isDoubleClick) {
+                    
+                    mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
+
+                    relevantCells = mapGameObject.getFilledCells(sf::Vector2f(mouseWindowOnButtonRelease.x, mouseWindowOnButtonRelease.y), sf::Vector2f(10, 10));
+                    int object_for_selection = -1;
+                    DynamicSparseSet<int> objects_for_selection;
+                    DynamicSparseSet<int> query = mapGameObject.queryHashMap(mouseWorldPos, 3, 1);
+                    for (size_t j = 0; j < query.size(); ++j)
                     {
-                        selectedObjects.insert(vectorElement, vectorElement);
-                    }
+                        
+                        int obj_id = query.getElements()[j];
+                        std::any object = mapGameObject.getObject(obj_id);
 
-                    
-
-                    //for (int i = 0; i < 20; ++i) {
-                    //    auto panel = tgui::Panel::create();
-                    //    panel->setSize({ "90%", "50" });
-                    //    panel->setPosition("5%", (150 + 30 + 10 + i * 60)); // Position dynamically
-
-                    //    // image creation
-                    //    auto pictureSelectionPanel = tgui::Picture::create("Images/Placeholder/Background-1.jpg");
-                    //    pictureSelectionPanel->setSize(30, 30);
-                    //    pictureSelectionPanel->setPosition(10, 10);
-                    //    panel->add(pictureSelectionPanel);
-
-                    //    // label creation
-                    //    auto labelSelectionPanel = tgui::Label::create();
-                    //    labelSelectionPanel->setText("Object with id: 1");
-                    //    labelSelectionPanel->setPosition("20%", "5");
-                    //    // labelSelectionPanel->setTextSize(30); // Set font size
-                    //    // labelSelectionPanel->setTextColor(sf::Color::White); // Set text color
-                    //    panel->add(labelSelectionPanel);
-
-                    //    // input field creation
-                    //    auto inputSelectionPanel = tgui::EditBox::create();
-                    //    inputSelectionPanel->setPosition("20%", "20");
-                    //    inputSelectionPanel->setSize("30%", "20");
-                    //    inputSelectionPanel->setDefaultText("Place holder"); // Default text inside the input field
-                    //    // inputSelectionPanel->setTextSize(20); // Font size for the text inside the input field
-                    //    panel->add(inputSelectionPanel);
-
-                    //    // button creation
-                    //    auto buttonSelectionPanel = tgui::Button::create();
-                    //    buttonSelectionPanel->setSize(20, 20);
-                    //    buttonSelectionPanel->setPosition("90%", "20");
-                    //    panel->add(buttonSelectionPanel);
-
-                    //    // adding to panel
-                    //    panelSelection->add(panel);
-
-                    //    selectionPannels.insert(i, panel);
-                    //}
-
-                    // gui logic counter
-                    // I want to create some independed function that I call with passing arguments, that creates gui
-                    // so I don't have to brain myself with bottlenecks, where I need to place other gui code
-                    
+                        sf::RectangleShape mouseB;
+                        mouseB.setSize(sf::Vector2f(3.f, 3.f));
+                        mouseB.setPosition(sf::Vector2f(mouseWorldPos));
 
 
-                    
-
-
-                    //.push_back(star.id);
-                }
-
-                int count = 0;
-                    for (const auto& elem : selectedObjects.getElements()) {
-                        // gui creation
-                        auto panel = tgui::Panel::create();
-                        panel->setSize({ "90%", "50" });
-                        panel->setPosition("5%", (150 + 30 + 10 + count * 60)); // Position dynamically
-
-                        // image creation
-                        auto pictureSelectionPanel = tgui::Picture::create();
-                        pictureSelectionPanel->setSize(30, 30);
-                        pictureSelectionPanel->setPosition(10, 10);
-                        // sharedTexturePlaceholderPic
-                        //pictureSelectionPanel->getRenderer()->setTexture(tgui::Texture::loadFromPixelData(sharedTexturePlaceholderPic.getSize(), sharedTexturePlaceholderPic.copyToImage().getPixelsPtr()));
-                        pictureSelectionPanel->getRenderer()->setTexture(tguiSharedTexture);
-                        panel->add(pictureSelectionPanel);
-
-                        //    // label creationadad
+                        if (object.type() == typeid(SpaceShip)) {
+                            SpaceShip ship = std::any_cast<SpaceShip>(object);
+                            if (ship.shipSprite.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                                for (size_t i = 0; i < mapGameObject.allShips.size(); i++)
+                                {
+                                    int ship_id = mapGameObject.allShips.getElements()[i].id;
+                                    objects_for_selection.insert(ship_id, ship_id);
+                                }
+                                break;
+                            }
+                        }
+                        else if (object.type() == typeid(StarSystem)) {
+                            StarSystem star = std::any_cast<StarSystem>(object);
+                            if (star.star.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                                for (size_t i = 0; i < mapGameObject.stars.size(); i++)
+                                {
+                                    int star_id = mapGameObject.stars.getElements()[i].id;
+                                    objects_for_selection.insert(star_id, star_id);
+                                }
+                                break;
+                            }
+                        }
 
                         
-                        auto labelSelectionPanel = tgui::Label::create();
-                        labelSelectionPanel->setText("Object with id: 1");
-                        labelSelectionPanel->setPosition("20%", "5");
-                        // labelSelectionPanel->setTextSize(30); // Set font size
-                        // labelSelectionPanel->setTextColor(sf::Color::White); // Set text color
-                        panel->add(labelSelectionPanel);
-
-                        // input field creation
-                        auto inputSelectionPanel = tgui::EditBox::create();
-                        inputSelectionPanel->setPosition("20%", "20");
-                        inputSelectionPanel->setSize("30%", "20");
-                        inputSelectionPanel->setDefaultText("Place holder"); // Default text inside the input field
-                        // inputSelectionPanel->setTextSize(20); // Font size for the text inside the input field
-                        panel->add(inputSelectionPanel);
-
-                        // button creation
-                        auto buttonSelectionPanel = tgui::Button::create();
-                        buttonSelectionPanel->setSize(20, 20);
-                        buttonSelectionPanel->setPosition("90%", "20");
-                        panel->add(buttonSelectionPanel);
-
-
-                        // get object in actual dynamic sparase set with objects
-                        // this will not work, because if object is not ship, it will blow up
-                        int type = mapGameObject.getTypeObject(elem);
-                        if (type == 2) {
-                            //std::cout << "We are selected ship: " << vectorElement << std::endl;
-                            //mapGameObject.selectedShips.insert(elem, elem);
-                            //mapGameObject.allShips.get/
-                            auto ship = mapGameObject.allShips.get(elem);
-
-                            if (ship.shipSprite.getGlobalBounds().intersects(selectionBox.getGlobalBounds())) {
-                            
-                                mapGameObject.selectedShips.insert(ship.id, ship.id);
-                            
+                    }
+                    
+                        if (objects_for_selection.size() > 0) {
+                            for (size_t e = 0; e < objects_for_selection.size(); ++e)
+                            {
+                                int id = objects_for_selection.getElements()[e];
+                                selectedObjects.insert(id, id);
                             }
-;
-                        }
-                        if (type == 1) {
-                            //std::cout << "We are selected star: " << vectorElement << std::endl;
-                            //mapGameObject.selectedStars.insert(elem, elem);
-                            auto star = mapGameObject.stars.get(elem);
-                            // if colide
-
-                            if (star.star.getGlobalBounds().intersects(selectionBox.getGlobalBounds())) {
-
-                                mapGameObject.selectedStars.insert(star.id, star.id);
-
-                            }
-
                         }
                         
-                        // gui adding to panel
-                        // adding to panel
-                        panelSelection->add(panel);
+                }
+                // single click selection
+                else {
+                    
 
-                        //selectionPannels.insert(count, panel);
+                    mouseWindowOnButtonRelease = sf::Vector2i(mouseWorldPos.x, mouseWorldPos.y);
 
-                        // gui spacing and inserting counter
-                        count += 1;
+                    relevantCells = mapGameObject.getFilledCells(sf::Vector2f(mouseWindowOnButtonRelease.x, mouseWindowOnButtonRelease.y), sf::Vector2f(10, 10));
+
+                    int object_for_selection = -1;
+                    DynamicSparseSet<int> objects_for_selection;
+                    DynamicSparseSet<int> query = mapGameObject.queryHashMap(mouseWorldPos, 3, 1);
+                    for (size_t j = 0; j < query.size(); ++j)
+                    {
+                       
+                        int obj_id = query.getElements()[j];
+                        
+                        std::any object = mapGameObject.getObject(obj_id);
+                        
+                        sf::RectangleShape mouseB;
+                        mouseB.setSize(sf::Vector2f(3.f, 3.f));
+                        mouseB.setPosition(sf::Vector2f(mouseWorldPos));
+
+                        
+                        if (object.type() == typeid(SpaceShip)){
+                            SpaceShip ship = std::any_cast<SpaceShip>(object);
+                            if (ship.shipSprite.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                                object_for_selection = ship.id;
+                                break;
+                            }
+                        }
+                        else if (object.type() == typeid(StarSystem)) {
+                            StarSystem star = std::any_cast<StarSystem>(object);
+                            if (star.star.getGlobalBounds().intersects(mouseB.getGlobalBounds())) {
+                                for (size_t i = 0; i < star.ships.size(); i++)
+                                {
+                                    int ship_id = star.ships.getElements()[i];
+                                    objects_for_selection.insert(ship_id, ship_id);
+                                }
+                                object_for_selection = star.id;
+                                break;
+                            }
+                        }
+
+                       
                     }
 
-                // iterate throw positions in
-                    if (selectedObjects.size() > 0 && soundOn) {
-                    sound.setBuffer(bufferSelectingUnits);
-                    sound.play();
-
+                    if (object_for_selection != -1) {
+                        if (objects_for_selection.size() > 0) {
+                            for (size_t e = 0; e < objects_for_selection.size(); ++e)
+                            {
+                                int id = objects_for_selection.getElements()[e];
+                                selectedObjects.insert(id, id);
+                            }
+                        }
+                        selectedObjects.insert(object_for_selection, object_for_selection);
+                    
+                    }   
                 }
+
+                
+                // this function is also sutomatically inserting it inside of selectedStars and ships. Don't know if I should separete it or not though
+                mapGameObject.updateSelectionUI(selectedObjects, panelSelection, tguishipTextureShared, tguiSharedTexture);
+                
+                std::cout << "This is the list of selected objects: " << std::endl;
+                selectedObjects.print();
             }
 
-            // logic of zooming
-            // #todo add maximum zooming and minimum zooming (done)
+            // logic, when moving ships with right mouse button
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+
+                sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
+
+                sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
+
+                auto cell = mapGameObject.queryHashMap(mouseWorldPos, 3, 0);
+
+                bool star_fly = false;
+
+                int Node_destination = -1;
+
+                for (size_t i = 0; i < cell.size(); ++i)
+                {
+                    int obj_id = cell.getElements()[i];
+
+                    int objectType = mapGameObject.getTypeObject(obj_id);
+                    if (objectType == 1) {
+                        star_fly = true;
+                        sf::Vector2f pos = mapGameObject.getObjectPosition(obj_id);
+                        Node_destination = mapGameObject.stars.get(obj_id).id;
+                        mouseWorldPos.x = pos.x;
+                        mouseWorldPos.y = pos.y;
+                    }
+
+                }
+                for (const auto& elem : mapGameObject.selectedShips.getElements())
+                {
+                    if (mapGameObject.allShips.get(elem).freeFly || star_fly) {
+                        
+                        int ship_id = mapGameObject.selectedShips.get(elem);
+                        
+                        if (!mapGameObject.allShips.get(elem).inMotion) {
+                            mapGameObject.movingShips.insert(ship_id, ship_id);
+                            
+                        }
+                        
+                        int Node_start = mapGameObject.allShips.get(elem).home_node;
+                        
+                        // creating advanced path. It will be added to ship previous path
+                        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                            
+                            if (mapGameObject.allShips.get(elem).MemoryPath.size() > 0) {
+                                Node_start = mapGameObject.queryHashMapFirst(mapGameObject.allShips.get(elem).MemoryPath.back(), 3, 1);////
+                            }
+                        }
+                        
+                        if (Node_destination != -1) {
+                                // a* algorithm
+                                std::vector<sf::Vector2f> cordList;
+                                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                                    cordList = mapGameObject.allShips.get(elem).MemoryPath;
+                                }
+                                std::vector<int> pathFly = mapGameObject.astar_pathfinding(Node_start, Node_destination);
+                                for (size_t r = 0; r < pathFly.size(); ++r)
+                                {
+                                    sf::Vector2f pos(mapGameObject.stars.get(pathFly[r]).starXposMap,
+                                        mapGameObject.stars.get(pathFly[r]).starYposMap);
+                                    
+                                    cordList.push_back(pos);
+                                }
+
+                                
+                                mapGameObject.allShips.get(elem).UpdateTargetList(cordList);
+
+                                
+                            }
+                            else {
+                            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                                
+                                mapGameObject.allShips.get(elem).UpdateTargetList({ mouseWorldPos });
+                            }
+                            else {
+
+                                mapGameObject.allShips.get(elem).setNewTarget(mouseWorldPos, false);
+                            }
+                        }
+
+                         
+                        if (mapGameObject.selectedShips.size() > 0 && soundOn) { 
+                            sound.setBuffer(bufferSendingShips); 
+                            sound.play(); 
+                        } 
+                    }           
+                }
+
+            }
+            
+            // Zooming logic
             if (event.type == sf::Event::MouseWheelScrolled && !isOverGui)
             {
                 if (event.mouseWheelScroll.delta > 0) { 
-                    // Zoom in (scale the view by 0.9)
+                    
                     if (!(zoomFactor < 0.5)) {
                     zoomFactor *= 0.9f;
                     shaderStar.setUniform("zoomFactor", zoomFactor);
@@ -876,132 +893,177 @@ int main()
                     }
                 }
                 else {
-                    // Zoom out (scale the view by 1.1)
+                    
                     if(!(zoomFactor > 3)){
-                        //std::cout << "True";
                         zoomFactor *= 1.1f;
                         shaderStar.setUniform("zoomFactor", zoomFactor);
                     }
-                    //std::cout << "zoomFactor is:" << zoomFactor;
                     
-
                 }
 
-                // Apply the new zoom factor
+                // Apply new zoom factor
                 sf::Vector2u windowSize = window.getSize();
-               
-
                 view.setSize(windowSize.x / zoomFactor, windowSize.y / zoomFactor);
                 shaderStar.setUniform("zoomFactor", zoomFactor);
             }
-            
-
-
         }
 
-        // moving all objects before rendering
-        // Calculate elapsed time
-        float deltaTime = clock.restart().asSeconds(); // this thing here, because all objects depend on same time.
-
-        
-
+        float deltaTime = clock.restart().asSeconds(); 
         window.clear(sf::Color::Black);
-
         window.draw(backgroundSprite); 
 
-        // check collision inside this loop
-       
-        // possibly broken iteration     
-        // 
-        // Retrieve the dense vector of selected ships
+        // Moving and collision logic
         auto& movingShips = mapGameObject.movingShips.getElements();
 
         for (size_t i = 0; i < mapGameObject.movingShips.size(); ++i)
         {
-            const auto& elem = movingShips[i];
-            //std::cout << "Current element in moving ships: " << elem << std::endl;
+            auto elem = movingShips[i];
             int ship_id = mapGameObject.movingShips.get(elem);
-            //std::cout << "Got the ship id: " << ship_id << std::endl;
-
+            
             int sectorX = (mapGameObject.allShips.get(elem).pos.x) / mapGameObject.sectorSize;
             int sectorY = (mapGameObject.allShips.get(elem).pos.y) / mapGameObject.sectorSize;
 
-
-            // I need to determine object grid and then draw it inside
-
             sf::Vector2f oldPos = mapGameObject.allShips.get(elem).pos;
-            //mapGameObject.removeFromHashMap(elem, mapGameObject.allShips.get(elem).pos);
+            
             mapGameObject.allShips.get(elem).Move(deltaTime);
 
-            // instead of removing, update object position
-            //currentlyOccupiedCells;
             mapGameObject.updateObjectPosition(elem, oldPos, mapGameObject.allShips.get(elem).pos);
+            auto& ship = mapGameObject.allShips.get(elem);
             
-            if (!mapGameObject.allShips.get(elem).inMotion) {
+            if (!ship.inMotion) {
+                DynamicSparseSet<int> nearbyObjects = mapGameObject.queryHashMap(ship.pos, 15, elem);
+
+                for (size_t j = 0; j < nearbyObjects.size(); ++j) {
+                    const auto& nearbyElement = nearbyObjects.getElements()[j];
+
+                    int objectTypeThis = mapGameObject.getTypeObject(elem);
+                    int objectTypeNearby = mapGameObject.getTypeObject(nearbyElement);
+
+                    if (objectTypeThis == 2 && objectTypeNearby == 1) {
+                        
+                        if (mapGameObject.colisionPointCheck(nearbyElement, ship.endPos)) {
+                            if (std::hypot(ship.endPos.x - ship.pos.x, ship.endPos.y - ship.pos.y) < ship.speed * deltaTime) {
+                                mapGameObject.stars.get(nearbyElement).ships.insert(elem, elem); 
+                                mapGameObject.allShips.get(elem).visiable = false;
+                                mapGameObject.allShips.get(elem).home_node = mapGameObject.stars.get(nearbyElement).id;
+                                int teamIDstar = mapGameObject.stars.get(nearbyElement).teamID;
+                                int teamIDship = mapGameObject.allShips.get(elem).teamID;
+
+                                if (teamIDstar != teamIDship) {
+                                    teams.get(teamIDstar).removeStarFromTeam(mapGameObject.stars.get(nearbyElement).id);//.!!!!!
+                                    teams.get(teamIDship).addStarToTeam(mapGameObject.stars.get(nearbyElement).id);
+                                    if (mapGameObject.stars.get(nearbyElement).id == mapGameObject.hoveredObject) {
+                                        mapGameObject.originHoverColor = teams.get(teamIDship).teamColor;
+                                    }
+                                    else {
+                                        mapGameObject.stars.get(nearbyElement).starColor = teams.get(teamIDship).teamColor;
+                                    }
+                                    mapGameObject.stars.get(nearbyElement).teamID = teamIDship;
+                                }
+
+
+                            }
+                            
+                            
+                        }
+                        
+                    }
+                    
+                }
+
+                // After checking if it's inside the star delete it from moving
                 mapGameObject.movingShips.erase(elem);
                 break;
             }
 
-            // this don't work as it should
-            // now it detects stars and ships
             DynamicSparseSet<int> nearbyObjects = mapGameObject.queryHashMap(mapGameObject.allShips.get(elem).pos, 15, elem);
-            //std::cout << "Size of nearbyObjets: " << nearbyObjects.size() << std::endl;
+            
             if (nearbyObjects.size() > 0) {
-                std::cout << "Coliding this are all nearby objects!" << std::endl;
                 
                 auto& nearObjects = nearbyObjects.getElements();
-                // u need to iterate using other way...
                 for (size_t j = 0; j < nearbyObjects.size(); ++j)
                 {
-                    // use nearby Element
                     const auto& nearbyElement = nearObjects[j];
-
-                    std::cout << "Objects: " << nearbyObjects.get(nearbyElement) << std::endl;
 
                     int objectTypeThis = mapGameObject.getTypeObject(elem);
                     int objectTypeNearby = mapGameObject.getTypeObject(nearbyElement);
-                    // here I will make logic of colision
-
-                    // add complex logic of colision (detect preciselly, if objects are colliding
                     bool collides = mapGameObject.colisionCheck(elem, nearbyElement);
 
+                    
                     if (collides) {
-                        std::cout << "at least we are coliding" << std::endl;
-                        std::cout << "Type number of itself:" << objectTypeThis << std::endl;
-                        std::cout << "Type number of object nearby:" << objectTypeNearby << std::endl;
-                        // making ships destroyable
+                        // coliding two ships
                         if (objectTypeThis == 2 && objectTypeNearby == 2) {
-                            // if other ships has other team, then I will make them destroy each other for now... 
-                            int thisTeam = mapGameObject.allShips.get(elem).teamID;
-                            int otherTeam = mapGameObject.allShips.get(nearbyElement).teamID;
+                            
+                            auto thisShip = mapGameObject.allShips.get(elem);
+                            auto otherShip = mapGameObject.allShips.get(nearbyElement);
+                            int thisTeam = thisShip.teamID;
+                            int otherTeam = otherShip.teamID;
+
+                            // destroying ships and creating particles of explision
                             if (thisTeam != otherTeam) {
                                 std::cout << "Destroying ship with id: " << elem << ", " << nearbyElement << std::endl;
+
+                                if (mapGameObject.hoveredObject == elem || mapGameObject.hoveredObject == nearbyElement) {
+                                    mapGameObject.hoveredObject = -1;
+                                }
+                                Particle first_ship_destr = Particle(explosionTexture, thisShip.pos, 3.f, 64, 512, 512);
+                                mapGameObject.addParticle(first_ship_destr);
+                                auto& homeStar = mapGameObject.stars.get(thisShip.home_node);
+                                std::cout << "Home node on deleding this ship: " << homeStar.id << std::endl;
+                                homeStar.ships.erase(thisShip.id);
+                                int thisShipteam = thisShip.teamID;
+                                teams.get(thisShipteam).removeShipFromTeam(thisShip.id);
+
+
+                                auto& otherhomeStar = mapGameObject.stars.get(otherShip.home_node);
+                                std::cout << "Home node on deleding other ship: " << otherhomeStar.id << std::endl;
+                                otherhomeStar.ships.erase(otherShip.id);
+                                int otherShipteam = otherShip.teamID;
+                                teams.get(otherShipteam).removeShipFromTeam(otherShip.id);
+
                                 mapGameObject.destroyShip(elem);
                                 mapGameObject.destroyShip(nearbyElement);
                                 nearbyObjects.erase(nearbyElement);
-                                // delete them from grid too
                                 break;
                             }
 
                         }
-                        //std::cout << "Can get here" << std::endl;
+                        // colision between star and ship
                         if (objectTypeThis == 2 && objectTypeNearby == 1) {
-                            //std::cout << "Coliding with star" << std::endl;
-                           
-                            // check if ships target colides with star
                             if (mapGameObject.colisionPointCheck(nearbyElement, mapGameObject.allShips.get(ship_id).endPos)) {
-                                std::cout << "Target is in the star" << std::endl;
-                                // check teams
-                                
+                                auto ship = mapGameObject.allShips.get(elem); 
+                                auto star = mapGameObject.stars.get(nearbyElement);
 
-                                // put ship into star objects list
-                                mapGameObject.stars.get(nearbyElement).ships.insert(ship_id, ship_id); 
+                                if (ship.shipSprite.getGlobalBounds().intersects(star.smallHitBox.getGlobalBounds())) {
+                                    mapGameObject.stars.get(nearbyElement).ships.insert(elem, elem);
+                                    mapGameObject.allShips.get(elem).visiable = false;
+                                    mapGameObject.allShips.get(elem).home_node = mapGameObject.stars.get(nearbyElement).id;
+                                    std::cout << "Placed inside star" << std::endl;
+                                    int teamIDstar = mapGameObject.stars.get(nearbyElement).teamID;
+                                    int teamIDship = mapGameObject.allShips.get(elem).teamID;
 
-                                mapGameObject.allShips.get(ship_id).visiable = false;
+                                    if (teamIDstar != teamIDship) {
+                                        teams.get(teamIDstar).removeStarFromTeam(mapGameObject.stars.get(nearbyElement).id);//.!!!!!
+                                        teams.get(teamIDship).addStarToTeam(mapGameObject.stars.get(nearbyElement).id);
+                                        if (mapGameObject.stars.get(nearbyElement).id == mapGameObject.hoveredObject) {
+                                            mapGameObject.originHoverColor = teams.get(teamIDship).teamColor;
+                                        }
+                                        else {
+                                            mapGameObject.stars.get(nearbyElement).starColor = teams.get(teamIDship).teamColor;
+                                        }
+                                        mapGameObject.stars.get(nearbyElement).teamID = teamIDship;
+                                    }
+                                }
+                                else {
+                                    mapGameObject.allShips.get(ship_id).visiable = true;
+                                    mapGameObject.stars.get(nearbyElement).ships.erase(ship_id);
+                                    
+                                }
 
-                                // make visability - false
-
-
+                            }
+                            else {
+                                mapGameObject.stars.get(nearbyElement).ships.erase(elem); 
+                                mapGameObject.allShips.get(elem).visiable = true; 
                             }
 
                         }
@@ -1014,42 +1076,22 @@ int main()
             
         }
         
+        // Shaders
         shaderStar.setUniform("windowHeight", static_cast<float>(window.getSize().y));
-
-
-
-        // Drawing objects
-        
-
         shaderStar.setUniform("center", sf::Vector2f(500, 400));
         shaderStar.setUniform("color", sf::Glsl::Vec3(1.0f, 1.0f, 1.0f));
         shaderStar.setUniform("radius", 30.0f);
         // To invert Y coordinates
         shaderStar.setUniform("windowHeight", static_cast<float>(window.getSize().y));
 
-        //std::cout << "Second star x, y";
-
-        //mapGameObject.printSectors(); test function, I can print what I want from sectors
-        
+        // drawing objects
         mapGameObject.Display(window, shaderStar, zoomFactor);
 
         // debug dot
         window.draw(dot);
-
+        // debug circle
         window.draw(testShape);
-       
-
-
-        // Set the view to apply the scaling and translation
         window.setView(view);
-
-        // error
-        for (size_t i = 0; i < mapGameObject.allShips.size(); ++i)
-        {
-            int ship_id = mapGameObject.allShips.getElements()[i].id;
-            mapGameObject.allShips.get(ship_id).Display(window);
-        }
-
         window.draw(time_text);
 
         if (mapGameObject.selectedStars.size() < 1 && mapGameObject.selectedShips.size() < 1) {
@@ -1059,32 +1101,28 @@ int main()
             panelSelection->setVisible(true);
         }
 
+        for (size_t i = 0; i < mapGameObject.particleManager.size(); ++i)
+        {
+            mapGameObject.particleManager.get(i).update(window); 
 
-        // this is the type of selection, that is under gui. Second type of selection would be on top of the gui
-        if (mouseStilPressed) {
-            // draw selection (correct)
-            mouseBox.setPosition(sf::Vector2f(mouseWindowOnButtonPress.x, mouseWindowOnButtonPress.y));
-            mouseBox.setSize(sf::Vector2f( mouseWindowOnButtonRelease.x - mouseWindowOnButtonPress.x,  mouseWindowOnButtonRelease.y - mouseWindowOnButtonPress.y));
+        }
+
+        // draw rectangle selection box
+        if (dragging) {
+            sf::Vector2i mouseWindowPos = sf::Mouse::getPosition(window);
+            sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mouseWindowPos, view);
+
+            mouseBox.setPosition(sf::Vector2f(dragStart.x, dragStart.y));
+            mouseBox.setSize(sf::Vector2f(mouseWorldPos.x - dragStart.x, mouseWorldPos.y - dragStart.y));
             window.draw(mouseBox);
         }
 
-
+        // draw UI
         gui.draw();
-        // Отображение окна на экране
+        
+        // Update the screen
         window.display(); 
     }
 
     return 0;
 }
-
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.

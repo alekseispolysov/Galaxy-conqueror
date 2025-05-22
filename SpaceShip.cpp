@@ -9,7 +9,7 @@ sf::Vector2f normalize(const sf::Vector2f& vector) {
 	return vector / length; // Divide each component by the magnitude
 }
 
-SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int teamID, int id):pos(pos), shipTexutre(shipTexutre), teamID(teamID), id(id) {
+SpaceShip::SpaceShip(sf::Vector2f pos, sf::Texture* shipTexutre, int teamID, int home_node, bool freeFly, int id):pos(pos), shipTexutre(shipTexutre), teamID(teamID), home_node(home_node), freeFly(freeFly), id(id) {
 	//shipSprite.setTextureRect(sf::IntRect(0, 0, 30, 100)); // With that I can access the one sheet with all sprites
 	shipSprite.setTexture(*shipTexutre);
 	shipSprite.setScale(sf::Vector2f(0.1f, 0.1f)); // size 2times smaller
@@ -52,11 +52,19 @@ void SpaceShip::Display(sf::RenderWindow& win)
 }
 
 // called, when new target for ship is assigned
-void SpaceShip::setNewTarget(sf::Vector2f position)
+void SpaceShip::setNewTarget(sf::Vector2f position, bool newCords)
 {
 
+	if (newCords) {
+		MemoryPath.push_back(position);
+	}
+	else {
+		MemoryPath.clear();
+		MemoryPath.push_back(position);
+	}
+
 	// here we maybe move some angle logic
-	endPos = position;
+	endPos = MemoryPath[0];
 	// get current angle
 	curAngle = shipSprite.getRotation();
 	
@@ -86,6 +94,48 @@ void SpaceShip::setNewTarget(sf::Vector2f position)
 
 	isRotating = true;
 	}
+}
+
+void SpaceShip::setNewTarget()
+{
+	// here we maybe move some angle logic
+	endPos = MemoryPath[0];
+	// get current angle
+	curAngle = shipSprite.getRotation();
+
+	// get right angle
+
+	// set rotating to true
+
+	// Creating direction vector, that is responsible for moving ship into ther right direction
+	direction = normalize(endPos - pos);
+
+	/* std::atan2(y, x) computes the angle(in radians) between the positive
+		x
+		x - axis and the vector(direction).
+		The result is converted to degrees by multiplying by
+		180
+		---
+		P
+		.*/
+		// problem can be right here, or it can be in the rotation logic. Probably in both
+	endAngle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f + 90.0f;		// arguments (y, x) + 90 degrees in the end to fix direction
+	//std::cout << "Current angle:" << curAngle << std::endl;
+	//std::cout << "Get new angle:" << endAngle << std::endl;
+
+	isMoving = false;
+	inMotion = true;
+	if (endAngle != curAngle) {
+
+		isRotating = true;
+	}
+}
+
+void SpaceShip::UpdateTargetList(std::vector<sf::Vector2f> cordList)
+{
+	MemoryPath = cordList; ////
+
+	setNewTarget();
 }
 
 // rename this function
@@ -130,10 +180,26 @@ void SpaceShip::Move(float deltaTime)
 
 		// sqrt of (x2 + y2)
 		if (std::hypot(endPos.x - pos.x, endPos.y - pos.y) < speed * deltaTime) {
-			pos = endPos;
-			isMoving = false;
-			isRotating = false;
-			inMotion = false;
+			
+			if (MemoryPath.size() > 1) {
+				pos = endPos;
+				MemoryPath.erase(MemoryPath.begin());
+				endPos = MemoryPath[0];
+				isMoving = false;
+				isRotating = true;
+				curAngle = shipSprite.getRotation();
+				direction = normalize(endPos - pos);
+				endAngle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f + 90.0f;
+			}
+			else {
+				MemoryPath.clear();
+				pos = endPos;
+				isMoving = false;
+				isRotating = false;
+				inMotion = false;
+			}
+			
+
 		}
 
 	}

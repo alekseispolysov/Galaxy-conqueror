@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 #include <vector>
 #include <cassert>
 
@@ -18,6 +19,8 @@ public:
 	void print();
     int size();
     void clear();
+
+    DynamicSparseSet<T>& operator=(const DynamicSparseSet<T>& other);
 
 private:
 	std::vector<int> sparse;  // Sparse array: maps IDs to positions in dense
@@ -71,6 +74,9 @@ bool DynamicSparseSet<T>::contains(int id)
 template<typename T>
 T& DynamicSparseSet<T>::get(int id)
 {
+    if (!contains(id)) {
+        throw std::runtime_error("ID " + std::to_string(id) + " not in the set");
+    }
     assert(contains(id) && "ID not in the set");
     return dense[sparse[id]];
 }
@@ -109,4 +115,14 @@ void DynamicSparseSet<T>::clear() {
     sparse.clear();
     dense.clear();
     ids.clear();
+}
+
+template<typename T>
+DynamicSparseSet<T>& DynamicSparseSet<T>::operator=(const DynamicSparseSet<T>& other) {
+    if (this != &other) {
+        sparse = other.sparse;
+        dense = other.dense;
+        ids = other.ids;
+    }
+    return *this;
 }

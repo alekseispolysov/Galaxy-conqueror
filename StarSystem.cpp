@@ -5,8 +5,8 @@
 #include <iostream>
 
 
-StarSystem::StarSystem(int starXposMap, int starYposMap, float radius, sf::Color starColor, std::string name)
-    :starXposMap(starXposMap), starYposMap(starYposMap), radius(radius), starColor(starColor), name(name)
+StarSystem::StarSystem(int starXposMap, int starYposMap, float radius, int teamID, sf::Color starColor, std::string name)
+    :starXposMap(starXposMap), starYposMap(starYposMap), radius(radius), teamID(teamID), starColor(starColor), name(name)
 {
     // Initialize member variables
 
@@ -21,6 +21,9 @@ StarSystem::StarSystem(int starXposMap, int starYposMap, float radius, sf::Color
     star.setFillColor(starColor);
     star.setPosition(starXposMap - radius, starYposMap - radius);
 
+    smallHitBox.setPosition(sf::Vector2f(starXposMap - 2, starYposMap - 2));
+    smallHitBox.setSize(sf::Vector2f(5,5));
+    
     //
 
 }
@@ -48,27 +51,30 @@ void StarSystem::Display(sf::RenderWindow& win, sf::Shader& shader, float zoomFa
     states.shader = this->setShader(win, shader, zoomFactor);
 
 
+
     win.draw(star, states);
+    // here I will draw more ships, if there would be more ships
 
 
 }
 
-void StarSystem::ConnectTo(StarSystem* otherSystem) {
-    connections.push_back(otherSystem);
-}
+//void StarSystem::ConnectTo(StarSystem* otherSystem) {
+//    connections.push_back(otherSystem);
+//}
 
-void StarSystem::DrawAllConnections(sf::RenderWindow& win) {
-
-    for (size_t i = 0; i < this->connections.size(); ++i)
-    {
-        
-        sf::Vertex line[] = {
-        sf::Vertex(sf::Vector2f(starXposMap,starYposMap), sf::Color(starColor.r, starColor.g, starColor.b, 55.0f)),
-        sf::Vertex(sf::Vector2f(this->connections[i]->starXposMap,this->connections[i]->starYposMap), sf::Color(this->connections[i]->starColor.r, this->connections[i]->starColor.g, this->connections[i]->starColor.b, 55.0f)),
-        };
-        win.draw(line, 2, sf::Lines);
-    }
-}
+//void StarSystem::DrawAllConnections(sf::RenderWindow& win, DynamicSparseSet<StarSystem&> connected_stars) {
+//
+//    for (size_t i = 0; i < connected_stars.size(); ++i)
+//    {
+//        StarSystem& connected_star = connected_stars.getElements()[i];
+//        // replace this, either in 
+//        sf::Vertex line[] = {
+//        sf::Vertex(sf::Vector2f(starXposMap,starYposMap), sf::Color(starColor.r, starColor.g, starColor.b, 55.0f)),
+//        sf::Vertex(sf::Vector2f(connected_star.starXposMap ,connected_star.starYposMap), sf::Color(connected_star.starColor.r, connected_star.starColor.g, connected_star.starColor.b, 55.0f)),
+//        };
+//        win.draw(line, 2, sf::Lines);
+//    }
+//}
 
 bool StarSystem::checkCollisionShip(SpaceShip* ship)
 {
